@@ -1,41 +1,93 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const puppeteer = require("puppeteer");
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const port = 3000;
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// app.get("/", async (req, res) => {
+//   async function getData() {
+//     const url = "https://dummy-json.mock.beeceptor.com/posts";
+//     try {
+//       const response = await fetch(url);
+//       if (!response.ok) {
+//         throw new Error(`Response status: ${response.status}`);
+//       }
 
-var app = express();
+//       const json = await response.json();
+//       console.log(json);
+//       return json;
+//     } catch (error) {
+//       console.error(error.message);
+//     }
+//   }
+//   const test = await getData();
+//   res.json({ a: 1, result: test });
+// });
+app.use(cors());
+app.get("/test", async (req, res) => {
+  const linky = decodeURI(req.query.url);
+  const getQuotes = async () => {
+    // Start a Puppeteer session with:
+    // - a visible browser (`headless: false` - easier to debug because you'll see the browser in action)
+    // - no default viewport (`defaultViewport: null` - website page will in full width and height)
+    const browser = await puppeteer.launch({
+      headless: false,
+      defaultViewport: null,
+    });
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+    const page = await browser.newPage();
+    //
+    // On this new page:
+    // - open the "http://quotes.toscrape.com/" website
+    // - wait until the dom content is loaded (HTML is ready)
+    await page.goto(linky, {
+      waitUntil: "domcontentloaded",
+    });
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+    // Get page data
+    const data = await page.evaluate(() => {
+      // Fetch the first element with class "quote"
+      const fullHTML = document.querySelector("*").outerHTML;
+      console.log(fullHTML);
+      const Title = document
+        .querySelector("li.breadcrumb-item.active")
+        .textContent.trim()
+        .replace("\n", "");
+      const getAuthor = document.querySelector("div.author").querySelector("a");
+      const getDate = document
+        .querySelector("div.created.slacken")
+        .querySelectorAll("span")[1];
+      const converted_date =
+        getDate.textContent.split(" ")[0].replace(/\./g, "-") +
+        " / Cool3c / " +
+        getAuthor.textContent;
+      // Fetch the sub-elements from the previously fetched quote element
+      // Get the displayed text and return it (`.innerText`)
+      // const text = quote.querySelector(".text").innerText;
+      // const author = quote.querySelector(".author").innerText;
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+      return { Title, converted_date };
+    });
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+    // Display the quotes
+
+    // Close the browser
+    await browser.close();
+    return data;
+  };
+
+  // Start the scraping
+  const quotes = await getQuotes();
+  res.json(quotes);
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.put("/user", (req, res) => {
+  res.send("Got a PUT request at /user");
+});
+app.delete("/user", (req, res) => {
+  res.send("Got a DELETE request at /user");
 });
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});

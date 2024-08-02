@@ -1,0 +1,6 @@
+GET http://localhost:3000/test?url=https%3A%2F%2Fwww.cool3c.com%2Farticle%2F221477 HTTP/1.1
+
+
+
+###
+// http://localhost:3000/test?url=https%3A%2F%2Fwww.cool3c.com%2Farticle%2F221477 net::ERR_CONNECTION_REFUSED
