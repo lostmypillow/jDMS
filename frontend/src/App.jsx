@@ -3,7 +3,9 @@ import axios from "axios";
 function App() {
   // const [count, setCount] = useState(0);
   const [title, setTitle] = useState();
-  const [convdate, setConvdate] = useState();
+  const [date_source_author, setDate_source_author] = useState();
+  const [link, setLink] = useState();
+  const [contentArray, setContentArray] = useState();
   const [testURL, setTestURL] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   function handleChange(e) {
@@ -20,28 +22,39 @@ function App() {
       console.log(response);
       const results = await response.data;
       setIsLoading(false);
-      setTitle(results.Title);
-      setConvdate(results.converted_date);
+      setTitle(results.quotes.title);
+      setDate_source_author(results.quotes.date_source_author);
+      setLink(results.decodedLink);
+      setContentArray(results.quotes.allContent);
     } catch (error) {
       console.error(error);
     }
   }
   return (
     <>
-      <p>yoooo</p>
-      <input
-        type="text"
-        name=""
-        id=""
-        value={testURL}
-        onChange={handleChange}
-      />
+      <main className="container-fluid">
+        <h1>JDMS</h1>
+        <input
+          type="text"
+          name=""
+          id=""
+          value={testURL}
+          onChange={handleChange}
+        />
 
-      <button aria-busy={isLoading ? "true" : ""} onClick={apiCall}>
-        Search
-      </button>
-      <h1>{title}</h1>
-      <h2>{convdate}</h2>
+        <button aria-busy={isLoading ? "true" : ""} onClick={apiCall}>
+          Search
+        </button>
+        <p>{title}</p>
+        <p>{date_source_author}</p>
+        <p>{link}</p>
+
+        {contentArray?.map((content) => (
+          <>
+            <p>{content}</p> <br />
+          </>
+        ))}
+      </main>
     </>
   );
 }
