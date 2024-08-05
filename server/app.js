@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const getCool3C = require("./lib/getCool3C");
-const getMashdigi  = require ("./lib/getMashdigi")
+const getMashdigi  = require("./lib/getMashdigi")
+const getSogi = require("./lib/getSogi")
 const app = express();
 const port = 3000;
 
@@ -15,7 +16,11 @@ app.get("/test", async (req, res) => {
       break;
     case decodedLink.includes("mashdigi"):
       var content = await getMashdigi(decodedLink);
-      res.json({ decodedLink, content });  
+      res.json({ decodedLink, content });
+      break;
+    case decodedLink.includes("sogi"):
+      var content = await getSogi(decodedLink);
+      res.json({ decodedLink, content });
     default:
       console.log(`Default`);
   }
