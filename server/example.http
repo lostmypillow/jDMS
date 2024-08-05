@@ -2,4 +2,8 @@ GET http://localhost:3000/test?url=https%3A%2F%2Fwww.cool3c.com%2Farticle%2F2214
 
 
 ###
+GET http://localhost:3000/test?url=https%3A%2F%2Fmashdigi.com%2Fthe-eu-artificial-intelligence-act-has-officially-taken-effect-in-the-eu-and-it-is-planned-to-complete-the-formulation-of-a-general-artificial-intelligence-code-of-conduct-by-april-next-year%2F HTTP/1.1
+
+
+###
 

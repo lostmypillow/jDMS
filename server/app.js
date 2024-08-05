@@ -1,7 +1,7 @@
-const puppeteer = require("puppeteer");
 const express = require("express");
 const cors = require("cors");
 const getCool3C = require("./lib/getCool3C");
+const getMashdigi  = require ("./lib/getMashdigi")
 const app = express();
 const port = 3000;
 
@@ -10,19 +10,17 @@ app.get("/test", async (req, res) => {
   const decodedLink = decodeURI(req.query.url);
   switch (true) {
     case decodedLink.includes("cool3c"):
-      const quotes = await getCool3C(decodedLink);
-      res.json({ decodedLink, quotes });
+      var content = await getCool3C(decodedLink);
+      res.json({ decodedLink, content });
       break;
-    case "Mangoes":
-    case "Papayas":
-      console.log("Mangoes and papayas are $2.79 a pound.");
-      // Expected output: "Mangoes and papayas are $2.79 a pound."
-      break;
+    case decodedLink.includes("mashdigi"):
+      var content = await getMashdigi(decodedLink);
+      res.json({ decodedLink, content });  
     default:
-      console.log(`Sorr.`);
+      console.log(`Default`);
   }
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`JQuotes listening on port ${port}`);
 });
