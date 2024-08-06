@@ -2,7 +2,7 @@ GET http://localhost:3000/test?url=https%3A%2F%2Fwww.cool3c.com%2Farticle%2F2214
 
 
 ###
-GET http://localhost:3000/test?url=https%3A%2F%2Fwww.sogi.com.tw%2Farticles%2Fpoco_m6_plus_5g%2F6262526 HTTP/1.1
+GET http://localhost:3000/test?url=https%3A%2F%2Fwww.eprice.com.tw%2Fmobile%2Ftalk%2F4568%2F5811531%2F1%2F HTTP/1.1
 
 
 ###

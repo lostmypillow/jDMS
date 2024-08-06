@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 async function getCool3C(link) {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: null,
   });
   const page = await browser.newPage();
