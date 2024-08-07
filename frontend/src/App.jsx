@@ -22,10 +22,10 @@ function App() {
       console.log(response);
       const results = await response.data;
       setIsLoading(false);
-      setTitle(results.content.title);
-      setDate_source_author(results.content.date_source_author);
-      setLink(results.decodedLink);
-      setContentArray(results.content.allContent);
+      setTitle(results.title);
+      setDate_source_author(results.date_source_author);
+      setLink(results.link);
+      setContentArray(results.allContent);
     } catch (error) {
       console.error(error);
     }
