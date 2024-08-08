@@ -98,30 +98,136 @@ async function scrapeContent(link) {
       });
 
       break;
+    //////
 
+    //////sogi
     case link.includes("sogi"):
-      const title = $("h1.h1").text().trim();
+      title = $("h1.h1").text().trim();
 
-      date_source_author = `${$("div.d-inline-block.mr-3").first().text().replace("\n", "").trim().replace(/\//g, "-")} / 手機王 / ${$("div.d-inline-block.mr-3").eq(1).find("a").eq(1).text().trim()}`;
+      date_source_author = `${$("div.d-inline-block.mr-3")
+        .first()
+        .text()
+        .replace("\n", "")
+        .trim()
+        .replace(/\//g, "-")} / 手機王 / ${$("div.d-inline-block.mr-3")
+        .eq(1)
+        .find("a")
+        .eq(1)
+        .text()
+        .trim()}`;
 
-const getContent = $("div.editable.my-2").html();
-let para = getContent.split(/<br\s*\/?>/i);
+      let textArray = [];
 
-const allContent = [];
-para.forEach(function (a) {
-    let ax = a.trim();
-    if (
-        ax.startsWith("<") ||
-        ax.startsWith("▲") ||
-        ax === "" ||
-        ax.startsWith("資料來源")
-    ) {
-        return;
-    } else {
-        allContent.push(ax.replace(/<[^>]*>/g, "").trim());
-    }
-});
+      $("div.editable.my-2")
+        .html()
+        .split(/<br\s*\/?>/i)
+        .forEach((part) => {
+          textArray.push($(part).text().trim());
+        });
+
+      textArray = textArray.filter(
+        (text) =>
+          text.length > 0 &&
+          !text.startsWith("googletag") &&
+          !text.startsWith("▲") &&
+          !text.startsWith("訂閱手機王，快速掌握") &&
+          !text.startsWith("現在，你也可以同步追蹤")
+      );
+      content = textArray;
       break;
+    //////
+
+    //////buzzorange
+    case link.includes("buzzorange"):
+      title = $("h1.elementor-heading-title.elementor-size-default").text();
+
+      date_source_author =
+        $("time").text() +
+        " / BuzzOrange / " +
+        $(
+          "span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-author"
+        )
+          .text()
+          .trim();
+      let newarray = [];
+
+      $("div.elementor-widget-container > p").each((index, element) => {
+        if (
+          !$(element).text().trim().startsWith("還在靠社群媒體") &&
+          !$(element).text().trim().startsWith("訂閱即同意") &&
+          !$(element).text().trim().startsWith("＊本文開放")
+        ) {
+          newarray.push($(element).text().trim());
+        }
+      });
+      content = newarray;
+      console.log(content);
+      break;
+    ///////
+
+    //////money udn
+    case link.includes("money.udn"):
+      title = $("h1#story_art_title").text();
+      const text = $("div.article-body__info span").text();
+      const match = text.match(/記者(.*?)／/);
+      const result = match ? match[1] : "";
+
+      date_source_author =
+        $("time.article-body__time").text().replace(/\//g, "-").slice(0, 10) +
+        " / 經濟日報 / " +
+        result;
+      content = [];
+      $("section.article-body__editor p").each((index, element) => {
+        if (!$(element).text().trim() == "") {
+          content.push($(element).text().trim());
+        }
+      });
+      break;
+    //////
+
+    /////udn
+    case link.includes("udn"):
+      title = $("h1.article-content__title").text();
+      const udntext = $("div.article-body__info span").text();
+      const udnmatch = udntext.match(/記者(.*?)／/);
+      const udnresult = udnmatch ? udnmatch[1] : "";
+
+      date_source_author =
+        $("time.article-content__time").text().replace(/\//g, "-").slice(0, 10) +
+        " / 經濟日報 / " +
+        $("a[href^='/news/reporter/']").text();
+      content = [];
+      $("section.article-content__editor  p").each((index, element) => {
+        if (!$(element).text().trim() == "") {
+          content.push($(element).text().trim());
+        }
+      });
+      break;
+///////
+
+
+
+    case link.includes("chinatimes"):
+      break;
+    case link.includes("ctimes"):
+      break;
+    case link.includes("kocpc"):
+      break;
+    case link.includes("3c.ltn"):
+      break;
+    case link.includes("ec.ltn"):
+      break;
+    case link.includes("ltn"):
+      break;
+    case link.includes("xfastest"):
+      break;
+    case link.includes("cnyes"):
+      break;
+    case link.includes("moneydj"):
+        break;
+    case link.includes("investor"):
+      break;
+
   }
 
   return { title, date_source_author, link, content };

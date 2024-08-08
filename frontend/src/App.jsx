@@ -20,12 +20,12 @@ function App() {
         "http://localhost:3000/test?url=" + encoded
       );
       console.log(response);
-      const results = await response.data;
+      const results = await response.data.data;
       setIsLoading(false);
       setTitle(results.title);
       setDate_source_author(results.date_source_author);
       setLink(results.link);
-      setContentArray(results.allContent);
+      setContentArray(results.content);
     } catch (error) {
       console.error(error);
     }
@@ -51,7 +51,7 @@ function App() {
 
         {contentArray?.map((content) => (
           <>
-            <p>{content}</p> <br />
+            <p>{content}</p>
           </>
         ))}
       </main>

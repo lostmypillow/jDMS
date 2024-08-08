@@ -1,8 +1,8 @@
-GET http://localhost:3000/test?url=https%3A%2F%2Fmashdigi.com%2Fhuawei-officially-unveiled-the-nova-brands-first-mobile-phone-with-a-foldable-screen-and-nova-flip-is-open-for-pre-order-in-the-chinese-market%2F HTTP/1.1
+GET http://localhost:3000/test?url=https%3A%2F%2Fmoney.udn.com%2Fmoney%2Fstory%2F5612%2F8145788 HTTP/1.1
 
 
 ###
-GET http://localhost:3000/test?url=https%3A%2F%2Fwww.eprice.com.tw%2Fmobile%2Ftalk%2F4523%2F5811558%2F1%2F HTTP/1.1
+GET http://localhost:3000/test?url=https%3A%2F%2Fudn.com%2Fnews%2Fstory%2F7240%2F8145957 HTTP/1.1
 
 
 ###
