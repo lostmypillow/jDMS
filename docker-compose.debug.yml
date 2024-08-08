@@ -1,10 +1,10 @@
 version: '3.4'
 
 services:
-  server:
-    image: server
+  jdms:
+    image: jdms
     build:
-      context: server
+      context: jdms
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: development
