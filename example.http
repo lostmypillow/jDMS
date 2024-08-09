@@ -2,7 +2,7 @@ GET http://localhost:3000/test?url=https%3A%2F%2Fmoney.udn.com%2Fmoney%2Fstory%2
 
 
 ###
-GET http://localhost:3001/test?url=https%3A%2F%2Fwww.xfastest.com%2Fthread-290981-1-1.html HTTP/1.1
+GET http://localhost:3001/test?url=https%3A%2F%2Fec.ltn.com.tw%2Farticle%2Fbreakingnews%2F4762996 HTTP/1.1
 
 
 ###
