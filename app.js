@@ -7,8 +7,7 @@ const port = 3001;
 app.use(cors());
 
 app.get("/test", async (req, res) => {
-  var data = await scrapeContent(decodeURI(req.query.url));
-  res.json({ data });
+  res.json(await scrapeContent(decodeURI(req.query.url)));
 });
 
 app.listen(port, () => {
