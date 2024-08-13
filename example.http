@@ -2,7 +2,7 @@ GET http://localhost:3000/test?url=https%3A%2F%2Fmoney.udn.com%2Fmoney%2Fstory%2
 
 
 ###
-GET http://localhost:3001/test?url=https%3A%2F%2Fec.ltn.com.tw%2Farticle%2Fbreakingnews%2F4762996 HTTP/1.1
+GET http://localhost:3001/test?url=https%3A%2F%2Fwww.sogi.com.tw%2Farticles%2Fgoogle_pixel_9%2F6262585 HTTP/1.1
 
 
 ###
