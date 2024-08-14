@@ -1,4 +1,4 @@
-GET http://localhost:3000/test?url=https%3A%2F%2Fmoney.udn.com%2Fmoney%2Fstory%2F5612%2F8145788 HTTP/1.1
+GET http://localhost:3001/fetch HTTP/1.1
 
 
 ###
