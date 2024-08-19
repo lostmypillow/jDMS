@@ -3,7 +3,7 @@ const cors = require("cors");
 const scrapeContent = require("./lib/scrapeContent");
 const app = express();
 const port = 3001;
-const getHTMLFetch = require("./lib/getHTMLFetch")
+const getHTMLFetch = require("./lib/getHTML")
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
