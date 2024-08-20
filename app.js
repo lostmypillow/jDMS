@@ -33,11 +33,11 @@ app.get("/test", async (req, res) => {
   res.json(await scrapeContent(decodeURI(req.query.url)));
 });
 
-app.get("/fetch", async (req, res) => {
-const v = await getHTMLFetch("https://www.techbang.com/posts/117423-idc-the-increasing-demand-for-ai-pc-and-ai-mobile-phone")
-console.log(v)
-  res.json({message: "yo" });
-});
+// app.get("/fetch", async (req, res) => {
+// const v = await getHTMLFetch("https://www.techbang.com/posts/117423-idc-the-increasing-demand-for-ai-pc-and-ai-mobile-phone")
+// console.log(v)
+//   res.json({message: "yo" });
+// });
 
 
 app.listen(port, () => {
