@@ -41,5 +41,5 @@ app.get("/test", async (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`JQuotes listening on port ${port}`);
+  console.log(`JDMS listening on port ${port}`);
 });
