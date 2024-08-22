@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/pico.green.css">
+    <title>JDMS</title>
+    <script src="/javascripts/htmx.min.js"></script>
+</head>
+<body>
+    <main class="container-fluid">
+        <h1>JDMS</h1>
+        <p>yo</p>
+        <form hx-post="/news" hx-target="#content" hx-swap="innerHTML">
+            <fieldset role="group">
+              <input name="link" type="text" placeholder="Enter an URL" />
+              <button type="submit">Submit</button>
+            </fieldset>
+          </form>
+    <div id="content"></div>
+    </main>
+    
+</body>
+</html>

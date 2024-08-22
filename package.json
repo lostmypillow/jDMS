@@ -1,26 +1,27 @@
 {
   "name": "jdms",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./app.js localhost 3001",
-    "prod": "node ./app.js"
+    "dev": "nodemon ./bin/www",
+    "build": "esbuild app.js --bundle --platform=node --outfile=app-out.js --external:typescript",
+    "production":  "node ./bin/www_prod"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903",
   "dependencies": {
-    "cheerio": "1.0.0-rc.12",
-    "cors": "^2.8.5",
-    "docx": "^8.5.0",
-    "express": "^4.19.2",
-    "jsdom": "^24.1.1",
-    "node-fetch": "^3.3.2",
+    "cheerio": "^1.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "esbuild": "^0.23.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
     "node-fetch-commonjs": "^3.3.2",
     "nodemon": "^3.1.4",
-    "puppeteer": "^22.15.0"
+    "pug": "^3.0.3",
+    "puppeteer": "^23.1.1"
+  },
+  "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
+  "devDependencies": {
+    "typescript": "^5.5.4"
   }
 }
