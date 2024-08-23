@@ -1,9 +1,0 @@
-GET http://localhost:3001/fetch HTTP/1.1
-
-
-###
-GET http://localhost:3001/test?url=https%3A%2F%2Fwww.sogi.com.tw%2Farticles%2Fgoogle_pixel_9%2F6262585 HTTP/1.1
-
-
-###
-

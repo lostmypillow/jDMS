@@ -1,0 +1,16 @@
+GET http://localhost:3001/fetch HTTP/1.1
+
+
+###
+POST http://localhost:3000/news/create HTTP/1.1
+
+
+###
+GET http://localhost:3000/news/find HTTP/1.1
+
+
+###
+POST http://localhost:3000/news/update HTTP/1.1
+
+
+###
