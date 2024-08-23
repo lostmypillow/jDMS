@@ -1,11 +1,13 @@
-p
-  | #{title}
+each result in results
+  p
+  | #{result.title}
   br
-  | #{date_source_author}
+  | #{result.date_source_author}
   br
-  a(href=link) #{link}
+  a(href=result.link) #{result.link}
   br
-  each c in content
+
+  each c in result.content
     | #{c}
     br
     br

@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www",
-    "build": "esbuild app.js --bundle --platform=node --outfile=app-out.js --external:typescript",
-    "production":  "node ./bin/www_prod"
+    "build": "pnpm i && esbuild app.js --bundle --platform=node --outfile=app-out.js --external:typescript",
+    "production": "node ./bin/www_prod"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
+    "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "esbuild": "^0.23.1",

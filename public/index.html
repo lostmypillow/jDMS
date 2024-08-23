@@ -10,15 +10,22 @@
 <body>
     <main class="container-fluid">
         <h1>JDMS</h1>
-        <p>yo</p>
         <form hx-post="/news" hx-target="#content" hx-swap="innerHTML">
             <fieldset role="group">
-              <input name="link" type="text" placeholder="Enter an URL" />
-              <button type="submit">Submit</button>
+              <textarea name="link" type="text" placeholder="Enter an URL"></textarea>
+              <button id="meow" type="submit">Submit</button>
             </fieldset>
           </form>
-    <div id="content"></div>
+    <div id="content"></div> 
     </main>
-    
+    <script>
+      document.getElementById('meow').addEventListener('htmx:beforeRequest', function(event) {
+    this.setAttribute('aria-busy', 'true');
+  });
+
+  document.getElementById('meow').addEventListener('htmx:afterRequest', function(event) {
+    this.setAttribute('aria-busy', 'false');
+  });
+    </script>
 </body>
 </html>
