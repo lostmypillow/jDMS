@@ -1,13 +1,11 @@
 each result in results
-  p
-  | #{result.title}
-  br
-  | #{result.date_source_author}
-  br
-  a(href=result.link) #{result.link}
-  br
-
-  each c in result.content
-    | #{c}
-    br
-    br
+  article
+    header 
+      h1 #{result.title}
+      br
+      p #{result.date_source_author}
+      br
+      a(href=result.link) #{result.link}
+    each c in JSON.parse(result.content)
+      p #{c}
+      br

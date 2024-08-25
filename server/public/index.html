@@ -13,27 +13,27 @@
   <main class="container-fluid">
     <h1>JDMS</h1>
     <button id="predict">predict</button>
-    <form hx-post="/news/scrape" hx-target="#content" hx-swap="innerHTML">
+    <form hx-post="/news/scrape" hx-target="#content" hx-swap="innerHTML" id="yo">
       <fieldset role="group">
         <textarea name="link" type="text" placeholder="Enter an URL"></textarea>
         <button id="meow" type="submit">Submit</button>
       </fieldset>
     </form>
 
-    
-   
+    <div id="content"></div>
+
   </main>
   <script>
-    document.getElementById('meow').addEventListener('htmx:beforeRequest', function (event) {
-      this.setAttribute('aria-busy', 'true');
+    document.getElementById('yo').addEventListener('htmx:beforeRequest', function (event) {
+      document.getElementById("meow").setAttribute('aria-busy', 'true');
     });
 
-    document.getElementById('meow').addEventListener('htmx:afterRequest', function (event) {
-      this.setAttribute('aria-busy', 'false');
+    document.getElementById('yo').addEventListener('htmx:afterRequest', function (event) {
+      document.getElementById("meow").setAttribute('aria-busy', 'false');
     });
 
 
-   
+
 
 
   </script>

@@ -25,7 +25,10 @@ NewsContent.init(
     title: {
       type: DataTypes.STRING,
     },
-    dateSourceAuthor: {
+    date_source_author: {
+      type: DataTypes.STRING,
+    },
+    link: {
       type: DataTypes.STRING,
     },
     content: {
@@ -40,11 +43,20 @@ NewsContent.init(
 );
 
 router.post("/scrape", async function (req, res) {
-  const results = [];
-  for (const link of req.body.link.split("\n")) {
-    results.push(await scrapeContent(link));
+  await NewsContent.sync({force: true})
+  for (const link of req.body) {
+    const result = await scrapeContent(link);
+    NewsContent.create({
+      title: result.title,
+      date_source_author: result.date_source_author,
+      link: result.link,
+      content: JSON.stringify(result.content),
+    });
   }
-  res.render("result", { results: results });
+  // res.render("result", { results: await NewsContent.findAll() });
+  res.json(await NewsContent.findAll())
+  // console.log(req.body)
+  // res.send("ok")
 });
 
 router.post("/create", async function (req, res) {
