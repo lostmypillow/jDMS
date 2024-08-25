@@ -1,31 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/stylesheets/pico.green.css">
-    <title>JDMS</title>
-    <script src="/javascripts/htmx.min.js"></script>
-</head>
-<body>
-    <main class="container-fluid">
-        <h1>JDMS</h1>
-        <form hx-post="/news/scrape" hx-target="#content" hx-swap="innerHTML">
-            <fieldset role="group">
-              <textarea name="link" type="text" placeholder="Enter an URL"></textarea>
-              <button id="meow" type="submit">Submit</button>
-            </fieldset>
-          </form>
-    <div id="content"></div> 
-    </main>
-    <script>
-      document.getElementById('meow').addEventListener('htmx:beforeRequest', function(event) {
-    this.setAttribute('aria-busy', 'true');
-  });
 
-  document.getElementById('meow').addEventListener('htmx:afterRequest', function(event) {
-    this.setAttribute('aria-busy', 'false');
-  });
-    </script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/pico.green.css">
+  <title>JDMS</title>
+  <script src="/javascripts/htmx.min.js"></script>
+</head>
+
+<body>
+  <main class="container-fluid">
+    <h1>JDMS</h1>
+    <button id="predict">predict</button>
+    <form hx-post="/news/scrape" hx-target="#content" hx-swap="innerHTML">
+      <fieldset role="group">
+        <textarea name="link" type="text" placeholder="Enter an URL"></textarea>
+        <button id="meow" type="submit">Submit</button>
+      </fieldset>
+    </form>
+
+    
+   
+  </main>
+  <script>
+    document.getElementById('meow').addEventListener('htmx:beforeRequest', function (event) {
+      this.setAttribute('aria-busy', 'true');
+    });
+
+    document.getElementById('meow').addEventListener('htmx:afterRequest', function (event) {
+      this.setAttribute('aria-busy', 'false');
+    });
+
+
+   
+
+
+  </script>
+
 </body>
+
 </html>

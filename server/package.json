@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www",
-    "build": "pnpm i && esbuild app.js --bundle --platform=node --outfile=app-out.js --external:typescript",
+    "build": "pnpm i && esbuild app.js --bundle --platform=node --outfile=app-out.js --external:typescript --external:pg-hstore",
     "production": "node ./bin/www_prod"
   },
   "dependencies": {
