@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "staging": "jdms-63d90"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

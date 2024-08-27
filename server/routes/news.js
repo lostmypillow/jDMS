@@ -48,10 +48,7 @@ router.get("/get", async function (req, res) {
   await NewsContent.sync();
   res.json(
     req.query.id
-      ? await NewsContent.findOne({
-          where: {
-            id: req.query.id,
-          }})
+      ? await NewsContent.findByPk(req.query.id)
       : await NewsContent.findAll()
         
   );

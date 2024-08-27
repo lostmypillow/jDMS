@@ -7,6 +7,7 @@ import axios from "axios";
 const results = ref();
 const cv = ref()
 import { convertList } from "../lib/convertList";
+import { saveToStore } from "../lib/saveToStore";
 const nc = ref(store.newsContents);
 const whata = computed(() => {
   const groupedByCategory = nc.value.reduce((acc, article) => {
@@ -41,7 +42,8 @@ async function getData() {
 }
 
 onMounted(async () => {
-  await getData();
+
+
 });
 </script>
 
@@ -125,7 +127,7 @@ onMounted(async () => {
               <button class="btn" @click="console.log(whata)">get</button>
             </li>
             <!-- <li>{{ convertList(store.newsContents) }}</li> -->
-             <li>{{ store.newsContentsByCat }}</li>
+          
             <li v-for="key in Object.keys(store.newsContentsByCat)">
               <h2 class="menu-title">{{ key }}</h2>
               <ul>
