@@ -1,6 +1,18 @@
 const getHTML = require("./getHTML");
 const cheerio = require("cheerio");
-let failedLinkList = []
+let failedLinkList = [];
+
+function appendCat(obj) {
+  switch (true) {
+    case obj.title.includes("高通"):
+      obj.category = "qcom";
+      break;
+    case obj.title.includes("聯發科"):
+      obj.category = "mtk";
+      break;
+  }
+}
+
 async function scrapeContent(link) {
   var title = "";
   var date_source_author = "";
@@ -28,7 +40,7 @@ async function scrapeContent(link) {
       break;
     //////
 
-    ////// ePrice bug related links
+    ////// ePrice bug related links css comments
     case link.includes("eprice"):
       title = $("h1.title").text().trim();
       // const entry = $("span.date")
@@ -384,16 +396,16 @@ async function scrapeContent(link) {
     case link.includes("taisounds"):
       title = $("div.news-box h1").text();
       date_source_author = "" + $("a[href^='/more/reporternews']").text();
-      content = []
-      
+      content = [];
+
       // $("div.news-box-text.border")
       //   .text()
       //   .split(/<br\s*\/?>/i)
-        
-        //forEach((element) => {
-        //   element.trim()
-        // })
-        
+
+      //forEach((element) => {
+      //   element.trim()
+      // })
+
       // console.log(content);
 
       break;
@@ -443,7 +455,6 @@ async function scrapeContent(link) {
     //lpcomment
     //techudnc
     //2cm
-
   }
 
   return { title, date_source_author, link, content };

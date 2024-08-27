@@ -1,43 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/stylesheets/pico.green.css">
-  <title>JDMS</title>
-  <script src="/javascripts/htmx.min.js"></script>
-</head>
-
-<body>
-  <main class="container-fluid">
-    <h1>JDMS</h1>
-    <button id="predict">predict</button>
-    <form hx-post="/news/scrape" hx-target="#content" hx-swap="innerHTML" id="yo">
-      <fieldset role="group">
-        <textarea name="link" type="text" placeholder="Enter an URL"></textarea>
-        <button id="meow" type="submit">Submit</button>
-      </fieldset>
-    </form>
-
-    <div id="content"></div>
-
-  </main>
-  <script>
-    document.getElementById('yo').addEventListener('htmx:beforeRequest', function (event) {
-      document.getElementById("meow").setAttribute('aria-busy', 'true');
-    });
-
-    document.getElementById('yo').addEventListener('htmx:afterRequest', function (event) {
-      document.getElementById("meow").setAttribute('aria-busy', 'false');
-    });
-
-
-
-
-
-  </script>
-
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue</title>
+    <script type="module" crossorigin src="/assets/index-CtdbbAXL.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlHAJHv6.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
 </html>

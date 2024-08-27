@@ -34,6 +34,9 @@ NewsContent.init(
     content: {
       type: DataTypes.STRING,
     },
+    category: {
+      type: DataTypes.STRING,
+    }
   },
   {
     // Other model options go here
@@ -43,30 +46,21 @@ NewsContent.init(
 );
 
 router.post("/scrape", async function (req, res) {
-  await NewsContent.sync({force: true})
-  for (const link of req.body) {
-    const result = await scrapeContent(link);
-    NewsContent.create({
-      title: result.title,
-      date_source_author: result.date_source_author,
-      link: result.link,
-      content: JSON.stringify(result.content),
-    });
-  }
-  // res.render("result", { results: await NewsContent.findAll() });
-  res.json(await NewsContent.findAll())
-  // console.log(req.body)
-  // res.send("ok")
-});
+  // await NewsContent.sync();
 
-router.post("/create", async function (req, res) {
-  await NewsContent.sync();
-  // await NewsContent.sync({force: true})
-  NewsContent.create({
-    title: "meow",
-    dateSourceAuthor: "meow",
-    content: "meow",
-  });
+  await NewsContent.sync({ force: true });
+  for (const link of req.body) {
+    if (!(await NewsContent.findOne({ where: { link: link } }))) {
+      const result = await scrapeContent(link);
+      NewsContent.create({
+        title: result.title,
+        date_source_author: result.date_source_author,
+        link: result.link,
+        content: JSON.stringify(result.content),
+      });
+    }
+  }
+
   res.json(await NewsContent.findAll());
 });
 
@@ -90,7 +84,8 @@ router.post("/update", async function (req, res) {
 });
 
 router.get("/predict", async function (req, res) {
-  const headline = "文曄科技於2024台北國際自動化工業展出聯發科智慧物聯網平台Genio系列";
+  const headline =
+    "文曄科技於2024台北國際自動化工業展出聯發科智慧物聯網平台Genio系列";
   console.log(predictCategory(headline));
   res.send("ok");
 });
@@ -249,17 +244,13 @@ NVIDIA攜手聯發科，G-SYNC技術不再需要專用硬體模組
       console.log(newArray);
     }
   });
-  console.log(__dirname)
-  let g = __dirname + "/data.json"
-  fs.writeFile(
-    g,
-    JSON.stringify(newArray, null, 2),
-    (err) => {
-      if (err) throw err;
-      console.log("Data saved to data.json");
-    }
-  );
-  predictCategory()
+  console.log(__dirname);
+  let g = __dirname + "/data.json";
+  fs.writeFile(g, JSON.stringify(newArray, null, 2), (err) => {
+    if (err) throw err;
+    console.log("Data saved to data.json");
+  });
+  predictCategory();
   res.send("ok");
 });
 
