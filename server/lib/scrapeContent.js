@@ -13,7 +13,7 @@ function appendCat(title) {
     case title.includes("5G"):
       return "無線通訊市場";
 
-      case title.includes("OPPO") || title.includes("PC"):
+    case title.includes("OPPO") || title.includes("PC"):
       return "智慧型手機/消費性電子產品";
 
     default:
@@ -26,7 +26,7 @@ async function scrapeContent(link) {
   var date_source_author = "";
   var content = [];
   let dateParts;
-  var category = ""
+  var category = "";
   const $ = cheerio.load(await getHTML(link));
 
   switch (true) {
@@ -465,7 +465,7 @@ async function scrapeContent(link) {
     //techudnc
     //2cm
   }
-  
+  category = appendCat(title);
 
   return { title, date_source_author, category, link, content };
 }

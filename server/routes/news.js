@@ -36,7 +36,7 @@ NewsContent.init(
     },
     category: {
       type: DataTypes.STRING,
-    }
+    },
   },
   {
     // Other model options go here
@@ -44,6 +44,18 @@ NewsContent.init(
     modelName: "NewsContent", // We need to choose the model name
   }
 );
+router.get("/get", async function (req, res) {
+  await NewsContent.sync();
+  res.json(
+    req.query.id
+      ? await NewsContent.findOne({
+          where: {
+            id: req.query.id,
+          }})
+      : await NewsContent.findAll()
+        
+  );
+});
 
 router.post("/scrape", async function (req, res) {
   // await NewsContent.sync();
@@ -56,6 +68,7 @@ router.post("/scrape", async function (req, res) {
         title: result.title,
         date_source_author: result.date_source_author,
         link: result.link,
+        category: result.category,
         content: JSON.stringify(result.content),
       });
     }
@@ -64,18 +77,16 @@ router.post("/scrape", async function (req, res) {
   res.json(await NewsContent.findAll());
 });
 
-router.get("/find", async function (req, res) {
-  res.json(await NewsContent.findAll());
-});
-
 router.post("/update", async function (req, res) {
-  const changeMeow = await NewsContent.findOne({
-    where: {
-      title: "meow",
-    },
-  });
-  changeMeow.update({ title: "nomeow" });
+  (
+    await NewsContent.findOne({
+      where: {
+        id: req.body.id,
+      },
+    })
+  ).update(req.body);
   res.json(await NewsContent.findAll());
+  // res.json(req.body.yo)
 });
 
 router.get("/predict", async function (req, res) {
@@ -230,7 +241,7 @@ NVIDIA攜手聯發科，G-SYNC技術不再需要專用硬體模組
   lines.forEach((line) => {
     if (line.match(/相關新聞$|無線通訊市場$|消費性電子產品$|訊息$/)) {
       categoryToUpdate = line;
-      console.log(categoryToUpdate);
+      // console.log(categoryToUpdate);
     } else {
       newArray.push({
         headline: line.replace(/ /g, ""),

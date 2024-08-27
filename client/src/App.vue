@@ -1,14 +1,54 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { store } from "./store";
+import { computed, onMounted, ref } from "vue";
 const router = useRouter();
+import axios from "axios";
+const results = ref();
+const cv = ref()
+import { convertList } from "../lib/convertList";
+const nc = ref(store.newsContents);
+const whata = computed(() => {
+  const groupedByCategory = nc.value.reduce((acc, article) => {
+    if (!article.category) return acc;
 
+    const category = article.category;
+    const item = {
+      id: article.id,
+      title: article.title || "No Title",
+      category: category,
+      link: article.link,
+    };
+
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+
+    acc[category].push(item);
+
+    return acc;
+  }, {});
+  return groupedByCategory;
+});
+
+async function getData() {
+  const response = await axios.get("http://localhost:3002/news/get");
+  console.log(response);
+  results.value = response.data;
+  store.newsContents = response.data;
+  store.newsContentsByCat =  convertList(store.newsContents)
+
+}
+
+onMounted(async () => {
+  await getData();
+});
 </script>
 
 <template>
   <div class="flex flex-col h-screen">
     <!-- Navbar -->
-    <div class="navbar bg-base-100">
+    <div class="navbar bg-base-100 lg:hidden">
       <div class="flex-none">
         <label for="my-drawer-2" class="btn btn-square drawer-button lg:hidden">
           <svg
@@ -30,10 +70,7 @@ const router = useRouter();
         </label>
       </div>
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl"
-          >JDMS From A: {{ store.count
-          }}<span v-for="m in store.meow">meow{{ m }}</span></a
-        >
+        <a class="btn btn-ghost text-xl">JDMS</a>
       </div>
 
       <div class="flex-none">
@@ -46,11 +83,9 @@ const router = useRouter();
       <!-- Drawer -->
       <div class="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content flex flex-col w-full">
-        
-            <!-- RouterView will be displayed here -->
-            <RouterView></RouterView>
-     
+        <div class="drawer-content flex flex-col p-4 gap-4">
+          <!-- RouterView will be displayed here -->
+          <RouterView></RouterView>
         </div>
         <div class="drawer-side">
           <label
@@ -60,6 +95,13 @@ const router = useRouter();
           ></label>
           <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             <!-- Sidebar content here -->
+            <li>
+              <a
+                @click="router.push('/')"
+                class="btn btn-ghost text-xl hidden lg:flex"
+                >JDMS</a
+              >
+            </li>
             <li>
               <a class="btn btn-primary" @click="router.push('/import')"
                 ><svg
@@ -79,28 +121,23 @@ const router = useRouter();
                 >Import Links</a
               >
             </li>
-
-
-            <li class="grow h-fit">
-              <h2 class="menu-title">Title</h2>
-
+            <li>
+              <button class="btn" @click="console.log(whata)">get</button>
+            </li>
+            <!-- <li>{{ convertList(store.newsContents) }}</li> -->
+             <li>{{ store.newsContentsByCat }}</li>
+            <li v-for="key in Object.keys(store.newsContentsByCat)">
+              <h2 class="menu-title">{{ key }}</h2>
               <ul>
-                <li v-for="s in store.newsContents">
+                <li v-for="s in store.newsContentsByCat[key]">
                   <a @click="router.push(`edit/${s.id}`)">
-                    {{s.id}}. {{ s.title }}
+                    {{ s.id }}. {{ s.title }}
                   </a>
                 </li>
-
-
-
-                
               </ul>
-
-
             </li>
 
-
-
+            <ul></ul>
           </ul>
         </div>
       </div>

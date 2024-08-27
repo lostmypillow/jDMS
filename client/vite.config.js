@@ -5,7 +5,8 @@ import VueRouter from 'unplugin-vue-router/vite'
 export default defineConfig({
   server: {
     proxy: {
-"/news/scrape": "http://localhost:3000/"
+"/news/scrape": "http://localhost:3002/",
+"/news/get": "http://localhost:3002/"
     }
   },
   plugins: [VueRouter({
