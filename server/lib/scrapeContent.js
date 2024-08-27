@@ -2,14 +2,22 @@ const getHTML = require("./getHTML");
 const cheerio = require("cheerio");
 let failedLinkList = [];
 
-function appendCat(obj) {
+function appendCat(title) {
   switch (true) {
-    case obj.title.includes("高通"):
-      obj.category = "qcom";
-      break;
-    case obj.title.includes("聯發科"):
-      obj.category = "mtk";
-      break;
+    case title.includes("高通"):
+      return "Qualcomm相關新聞";
+
+    case title.includes("聯發科"):
+      return "MediaTek相關新聞";
+
+    case title.includes("5G"):
+      return "無線通訊市場";
+
+      case title.includes("OPPO") || title.includes("PC"):
+      return "智慧型手機/消費性電子產品";
+
+    default:
+      return "其他業界重要訊息";
   }
 }
 
@@ -18,6 +26,7 @@ async function scrapeContent(link) {
   var date_source_author = "";
   var content = [];
   let dateParts;
+  var category = ""
   const $ = cheerio.load(await getHTML(link));
 
   switch (true) {
@@ -232,7 +241,7 @@ async function scrapeContent(link) {
       break;
     /////
 
-    /////chinatimes bug
+    /////chinatimes bug time wrong
     // https://www.chinatimes.com/realtimenews/20240820002976-260412?chdtv
     case link.includes("chinatimes"):
       title = $("h1.article-title").text();
@@ -456,8 +465,9 @@ async function scrapeContent(link) {
     //techudnc
     //2cm
   }
+  
 
-  return { title, date_source_author, link, content };
+  return { title, date_source_author, category, link, content };
 }
 
 module.exports = scrapeContent;

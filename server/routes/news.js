@@ -65,12 +65,7 @@ router.post("/scrape", async function (req, res) {
 });
 
 router.get("/find", async function (req, res) {
-  const meowAll = await NewsContent.findAll({
-    where: {
-      title: "meow",
-    },
-  });
-  res.json(meowAll);
+  res.json(await NewsContent.findAll());
 });
 
 router.post("/update", async function (req, res) {

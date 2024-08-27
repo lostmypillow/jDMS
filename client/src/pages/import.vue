@@ -27,11 +27,15 @@ async function submitForm() {
     console.log(response);
     response.data.forEach(element => {
         store.newsContents.push(element)
-    });;
+    });
+    results.value = response.data
+
   } catch (error) {
     console.error("Error:", error);
   }
 }
+
+
 
 // const groupedByCategory = items.reduce((acc, item) => {
 //   const category = item.category;
@@ -64,7 +68,7 @@ async function submitForm() {
 
 </script>
 <template>
-     <main class="w-full h-svh px-4 py-2">
+     <main class="w-full h-full px-4 py-2">
  
 
  <textarea
@@ -77,6 +81,7 @@ async function submitForm() {
    "
  />
  <button class="btn" @click="submitForm">Search</button>
+
  <div class="card bg-base-100 w-full shadow-xl my-4" v-for="res in results">
    <!-- <label class="input input-bordered flex items-center gap-2">
      Title:

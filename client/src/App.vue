@@ -47,10 +47,10 @@ const router = useRouter();
       <div class="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col w-full">
-          <div class="flex-1">
+        
             <!-- RouterView will be displayed here -->
             <RouterView></RouterView>
-          </div>
+     
         </div>
         <div class="drawer-side">
           <label
@@ -79,16 +79,28 @@ const router = useRouter();
                 >Import Links</a
               >
             </li>
-            <li>
+
+
+            <li class="grow h-fit">
               <h2 class="menu-title">Title</h2>
+
               <ul>
                 <li v-for="s in store.newsContents">
                   <a @click="router.push(`edit/${s.id}`)">
-                    {{ s.title }}
+                    {{s.id}}. {{ s.title }}
                   </a>
                 </li>
+
+
+
+                
               </ul>
+
+
             </li>
+
+
+
           </ul>
         </div>
       </div>

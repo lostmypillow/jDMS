@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www",
-    "build": "esbuild app.js --bundle --platform=node --outfile=app-out.js  && node --experimental-sea-config sea-config.json",
+    "build": "esbuild app.js --bundle --platform=node --outfile=app-out.js",
     
     "production": "node ./bin/www_prod"
   },
