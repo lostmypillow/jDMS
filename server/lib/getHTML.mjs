@@ -1,5 +1,5 @@
-const fetch = require("node-fetch-commonjs");
-const puppeteer = require("puppeteer");
+import fetch from "node-fetch";
+import puppeteer from "puppeteer";
 
 async function usingNodeFetch(link) {
   return await (await fetch(link)).text();
@@ -7,7 +7,6 @@ async function usingNodeFetch(link) {
 
 async function usingPuppeteer(link) {
   const browser = await puppeteer.launch({
-    executablePath: "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
     headless: false,
     defaultViewport: null,
   });
@@ -21,10 +20,9 @@ async function usingPuppeteer(link) {
   return html;
 }
 
-async function getHTML(link) {
+export async function getHTML(link) {
   return link.includes("ctee") || link.includes("chinatimes")
     ? await usingPuppeteer(link)
     : await usingNodeFetch(link);
 }
 
-module.exports = getHTML;

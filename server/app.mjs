@@ -1,13 +1,107 @@
-var express = require("express");
-var router = express.Router();
-const scrapeContent = require("../lib/scrapeContent");
-const { Sequelize, DataTypes, Model } = require("sequelize");
-const predictCategory = require("../lib/predictCategory");
+import compression from "compression";
+import express from "express";
+import cookieParser from "cookie-parser";
+import createDebug from "debug";
+import http from "http";
+import logger from "morgan";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+import open from "open"; // Uncomment if using 'open'
+
+const debug = createDebug("planned-move:server");
+const port = normalizePort(process.env.PORT || "3002");
+const app = express()
+  .use(compression())
+  .use(cors())
+  .use(logger("dev"))
+  .use(express.json())
+  .use(express.urlencoded({ extended: false }))
+  .use(cookieParser())
+  .use(express.static(path.join(__dirname, "public")))
+
+  .use((err, req, res, next) => {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.send("error");
+  })
+  .set("port", port);
+
+const server = http.createServer(app);
+
+server
+  .listen(port, () => {
+    console.log(`Server running on port ${port}`);
+    // open(`http://localhost:${port}`);
+  })
+  .on("error", onError)
+  .on("listening", onListening);
+
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(`${bind} is already in use`);
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
+}
+import { scrapeContent } from "./lib/scrapeContent.mjs";
+
+import { Sequelize, DataTypes, Model } from "sequelize";
+
+import * as fs from "fs";
+
 const sequelize = new Sequelize({
   dialect: "sqlite",
   storage: "./database.sqlite",
 });
-const fs = require("fs");
 class NewsContent extends Model {
   static classLevelMethod() {
     return "foo";
@@ -44,17 +138,16 @@ NewsContent.init(
     modelName: "NewsContent", // We need to choose the model name
   }
 );
-router.get("/get", async function (req, res) {
+app.get("/get", async function (req, res) {
   await NewsContent.sync();
   res.json(
     req.query.id
       ? await NewsContent.findByPk(req.query.id)
       : await NewsContent.findAll()
-        
   );
 });
 
-router.post("/scrape", async function (req, res) {
+app.post("/scrape", async function (req, res) {
   // await NewsContent.sync();
 
   await NewsContent.sync({ force: true });
@@ -74,7 +167,7 @@ router.post("/scrape", async function (req, res) {
   res.json(await NewsContent.findAll());
 });
 
-router.post("/update", async function (req, res) {
+app.post("/update", async function (req, res) {
   (
     await NewsContent.findOne({
       where: {
@@ -86,14 +179,14 @@ router.post("/update", async function (req, res) {
   // res.json(req.body.yo)
 });
 
-router.get("/predict", async function (req, res) {
+app.get("/predict", async function (req, res) {
   const headline =
     "文曄科技於2024台北國際自動化工業展出聯發科智慧物聯網平台Genio系列";
   console.log(predictCategory(headline));
   res.send("ok");
 });
 
-router.get("/train", function (req, res) {
+app.get("/train", function (req, res) {
   // const data = req.body.train;
   const text = `
 Qualcomm相關新聞
@@ -257,4 +350,9 @@ NVIDIA攜手聯發科，G-SYNC技術不再需要專用硬體模組
   res.send("ok");
 });
 
-module.exports = router;
+export default app;
+
+// Uncomment if you need to handle 404 errors
+// .use((req, res, next) => {
+//   next(createError(404));
+// });

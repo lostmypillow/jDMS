@@ -1,5 +1,5 @@
-const getHTML = require("./getHTML");
-const cheerio = require("cheerio");
+import * as cheerio from 'cheerio';
+import { getHTML } from "./getHTML.mjs";
 let failedLinkList = [];
 
 function appendCat(title) {
@@ -21,7 +21,7 @@ function appendCat(title) {
   }
 }
 
-async function scrapeContent(link) {
+export async function scrapeContent(link) {
   var title = "";
   var date_source_author = "";
   var content = [];
@@ -470,4 +470,3 @@ async function scrapeContent(link) {
   return { title, date_source_author, category, link, content };
 }
 
-module.exports = scrapeContent;
