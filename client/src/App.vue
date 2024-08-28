@@ -5,7 +5,7 @@ import { computed, onMounted, ref } from "vue";
 const router = useRouter();
 import axios from "axios";
 const results = ref();
-const cv = ref()
+const cv = ref();
 import { convertList } from "../lib/convertList";
 import { saveToStore } from "../lib/saveToStore";
 const nc = ref(store.newsContents);
@@ -33,17 +33,12 @@ const whata = computed(() => {
 });
 
 async function getData() {
-  const response = await axios.get("http://localhost:3002/news/get");
-  console.log(response);
-  results.value = response.data;
-  store.newsContents = response.data;
-  store.newsContentsByCat =  convertList(store.newsContents)
-
+  console.log(store.newsContents)
 }
 
 onMounted(async () => {
-
-
+  await saveToStore("sync");
+  console.log(store.newsContentsByCat)
 });
 </script>
 
@@ -124,15 +119,24 @@ onMounted(async () => {
               >
             </li>
             <li>
-              <button class="btn" @click="console.log(whata)">get</button>
+              <button
+                class="btn"
+                @click="getData"
+              >
+                get
+              </button>
             </li>
             <!-- <li>{{ convertList(store.newsContents) }}</li> -->
-          
+
             <li v-for="key in Object.keys(store.newsContentsByCat)">
               <h2 class="menu-title">{{ key }}</h2>
               <ul>
                 <li v-for="s in store.newsContentsByCat[key]">
-                  <a @click="router.push(`edit/${s.id}`)">
+                  <a
+                    @click="
+                      router.push({ path: `/edit/${s.id}`, replace: true })
+                    "
+                  >
                     {{ s.id }}. {{ s.title }}
                   </a>
                 </li>

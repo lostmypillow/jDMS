@@ -466,6 +466,7 @@ export async function scrapeContent(link) {
     //2cm
   }
   category = appendCat(title);
+  content = JSON.stringify(content)
 
   return { title, date_source_author, category, link, content };
 }

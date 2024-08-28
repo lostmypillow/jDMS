@@ -1,5 +1,5 @@
 export function convertList(inputArray) {
-    const groupedByCategory = inputArray.reduce((acc, article) => {
+    const groupedByCategory = inputArray?.reduce((acc, article) => {
         if (!article.category) return acc;
     
         const category = article.category;

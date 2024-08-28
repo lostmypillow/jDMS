@@ -4,6 +4,7 @@ import axios from "axios";
 import { store } from "../store";
 const links = ref();
 import { convertList } from "../../lib/convertList";
+import { saveToStore } from "../../lib/saveToStore";
 const qcommLinks = ref();
 const mtekLinks = ref();
 const wirelessLinks = ref();
@@ -19,23 +20,26 @@ async function submitForm() {
     // Replace with your API endpoint
     isStandby.value = false;
     isLoading.value = true;
-    const response = await axios.post("/news/scrape", links?.value.split("\n"));
+    // const response = await axios.post("/scrape", links?.value.split("\n"));
+   results.value = await saveToStore("import", links?.value.split("\n"));
+    // // Handle the response as needed
+    // console.log(response);
+    // response.data.forEach((element) => {
+    //   store.newsContents.push(element);
 
-    // Handle the response as needed
-    console.log(response);
-    response.data.forEach((element) => {
-      store.newsContents.push(element);
-
-    });
-    store.newsContentsByCat = convertList(store.newsContents)
+    // });
+    // store.newsContentsByCat = convertList(store.newsContents)
+    console.log(store.newsContents)
+    console.log(await results.value)
     console.log(store.newsContentsByCat)
-    results.value = response.data;
+
     isLoading.value = false;
     isSuccess.value = true;
     setTimeout(() => {
       isSuccess.value = !isSuccess.value;
     }, 1500);
     isStandby.value = true;
+    console.log(links?.value.split("\n"));
   } catch (error) {
     console.error("Error:", error);
   }
