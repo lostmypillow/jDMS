@@ -38,7 +38,7 @@ const server = http.createServer(app);
 server
   .listen(port, () => {
     console.log(`Server running on port ${port}`);
-    // open(`http://localhost:${port}`);
+    open(`http://localhost:${port}`);
   })
   .on("error", onError)
   .on("listening", onListening);
@@ -146,7 +146,10 @@ app.get("/get", async function (req, res) {
       : await NewsContent.findAll()
   );
 });
-
+app.get("/flush", async function (req, res) {
+  await NewsContent.sync({ force: true });
+  res.send("ok")
+});
 // app.post("/scrape", async function (req, res) {
 //   // await NewsContent.sync();
 

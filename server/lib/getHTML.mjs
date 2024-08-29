@@ -21,7 +21,7 @@ async function usingPuppeteer(link) {
 }
 
 export async function getHTML(link) {
-  return link.includes("ctee") || link.includes("chinatimes")
+  return link.includes("ctee") || link.includes("chinatimes") || link.includes("udn")
     ? await usingPuppeteer(link)
     : await usingNodeFetch(link);
 }

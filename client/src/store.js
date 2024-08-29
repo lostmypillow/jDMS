@@ -6,7 +6,9 @@ export const store = reactive({
   newsContents: [],
   newsContentsByCat : {},
   isStandby: true,
-  isLoading: false
+  isImporting: false,
+  isSaving: false,
+  editContent: {}
 
 
 
