@@ -2,9 +2,7 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed, reactive, watch, nextTick } from "vue";
 import { store } from "../store";
-import axios from "axios";
-import { saveToStore } from "../../lib/saveToStore";
-
+import { tellDb } from "../../lib/tellDb";
 const route = useRoute();
 // const results = reactive({
 //   id: 1,
@@ -79,18 +77,18 @@ const route = useRoute();
 
 
 // watch(results, async (newResults) => {
-//   // await saveToStore(newResults);
-//   console.log(newResults, route.params.id)
+//   await(tellDb("edit", results.value))
+// await saveToStore("sync", await tellDb("sync"));
 // });
 console.log(store.newsContents)
 const allContent  = store.newsContents[0]
 const results = ref(allContent)
 const editTitle = computed({
   get() {
-    return results.title;
+    return results.value.title;
   },
   set(newValue) {
-    results.title = newValue;
+    results.value.title = newValue;
   },
 });
 </script>
