@@ -27,15 +27,29 @@ const btnClasses = computed(() => {
   const standby = isStandby.value ? " btn-primary " : "";
   const loading = isLoading.value ? " btn-disabled " : "";
   const success = isSuccess.value ? " btn-success " : "";
-  return standby + loading + success + "btn flex-none";
+  return standby + loading + success + "btn w-fit flex gap-4";
 });
 </script>
 <template>
-  <div class="flex flex-1 flex-col gap-4">
-    <h2 class="flex-none text-xl">Import Links</h2>
+
+    <div class="flex flex-row items-center justify-between w-full pb-4">
+      <h2 class="flex-none text-xl">Import Links</h2>
+      <button :class="btnClasses" @click="submitForm">
+        
+        <svg  v-if="!isLoading || !isSuccess" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        
+        <span
+          v-if="isLoading"
+          class="loading loading-spinner loading-sm"
+        ></span>
+        <span v-if="isLoading">Loading</span>
+        <span v-else-if="isSuccess">Success!</span>
+        <span v-else>Import Links</span>
+      </button>
+    </div>
     <textarea
       v-model="links"
-      class="flex grow textarea shadow-inner rounded-xl px-4 py-2 border-2 border-blue-200 resize-none"
+      class="flex grow textarea shadow-inner rounded-xl px-4 py-2 border-2 border-blue-200 resize-none w-full"
       @input="
         (event) => {
           links = event.target.value;
@@ -43,11 +57,4 @@ const btnClasses = computed(() => {
       "
     />
 
-    <button :class="btnClasses" @click="submitForm">
-      <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-      <span v-if="isLoading">Loading</span>
-      <span v-else-if="isSuccess">Success!</span>
-      <span v-else>Search</span>
-    </button>
-  </div>
 </template>

@@ -9,7 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
-import open from "open"; // Uncomment if using 'open'
+import open from "open"; 
 
 const debug = createDebug("planned-move:server");
 const port = normalizePort(process.env.PORT || "3002");
@@ -38,7 +38,7 @@ const server = http.createServer(app);
 server
   .listen(port, () => {
     console.log(`Server running on port ${port}`);
-    open(`http://localhost:${port}`);
+    // open(`http://localhost:${port}`);
   })
   .on("error", onError)
   .on("listening", onListening);
@@ -150,27 +150,10 @@ app.get("/flush", async function (req, res) {
   await NewsContent.sync({ force: true });
   res.send("ok")
 });
-// app.post("/scrape", async function (req, res) {
-//   // await NewsContent.sync();
 
-//   await NewsContent.sync({ force: true });
-//   for (const link of req.body) {
-//     if (!(await NewsContent.findOne({ where: { link: link } }))) {
-//       const result = await scrapeContent(link);
-//       NewsContent.create({
-//         ...result,
-//         content: JSON.stringify(result.content),
-//       });
-//     }
-//   }
-
-//   res.json(await NewsContent.findAll());
-// });
-
-//expects ["link", "link"] or "link"
 app.post("/update", async function (req, res) {
-  // await NewsContent.sync();
-  await NewsContent.sync({ force: true });
+  await NewsContent.sync();
+  // await NewsContent.sync({ force: true });
   for (const link of Array.isArray(req.body.link)
     ? req.body.link
     : [req.body.link]) {
@@ -178,7 +161,7 @@ app.post("/update", async function (req, res) {
       where: { link: link },
       defaults: await scrapeContent(link),
     });
-    !created && !isBodyAnArray ? await newscont.update(req.body) : null;
+    !created && !Array.isArray(req.body.link) ? await newscont.update(req.body) : null;
   }
  
   res.json(await NewsContent.findAll());

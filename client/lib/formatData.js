@@ -16,13 +16,13 @@
 // }
 
 export function formatData(data) {
-  const { title, link, date_source_author, content } = data;
+  const { title, date_source_author, link, content } = data;
 
   const contentArray = JSON.parse(content);
 
   const contentString = contentArray.join("\n\n");
 
-  return `${title}\n${link}\n${date_source_author}\n${contentString}`;
+  return `${title}\n${date_source_author}\n${link}\n${contentString}`;
 }
 
 // "file:///c:\users\johnny.lin\desktop\2024-08-06 qualcomm dms.docx#TOP"

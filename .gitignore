@@ -1,5 +1,6 @@
 server/node_modules
 client/node_modules
+electron/node_modules
 app-out.js
 .venv/*
 server/python/build

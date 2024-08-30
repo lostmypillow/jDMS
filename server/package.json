@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon app.mjs",
     "dev": "bun dev.mjs",
-    "build": "esbuild app.js --bundle --platform=node --outfile=app-out.js",
+    "build": "esbuild app.mjs --bundle --platform=node --outfile=app-out.mjs",
     "production": "node ./bin/www_prod"
   },
   "dependencies": {

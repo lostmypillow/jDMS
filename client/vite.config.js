@@ -13,8 +13,6 @@ export default defineConfig({
   plugins: [VueRouter({
     /* options */
   }),vue()],
-  build: {
-    outDir: "../server/public/"
-  }
+
  
 });

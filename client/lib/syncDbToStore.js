@@ -24,6 +24,8 @@ async function convertList(storeData) {
 export async function syncDbToStore() {
     const response = await axios.get(import.meta.env.VITE_GET);
     store.newsContents = await response.data;
-  store.newsContentsByCat = await convertList(store.newsContents);
+    console.log("syncDbtoStore")
+    console.log(store.newsContents)
+  // store.newsContentsByCat = await convertList(store.newsContents);
  
 }

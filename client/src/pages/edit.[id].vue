@@ -1,6 +1,6 @@
 <script>
 import { defineBasicLoader } from "unplugin-vue-router/data-loaders/basic";
-// const objToUpdate = store.newsContents.find(item => item.id === route.params.id);
+
 import { importFromStore } from "../../lib/importFromStore";
 export const useUserData = defineBasicLoader("/edit/[id]", async (route) => {
   return importFromStore(route.params.id);
@@ -9,61 +9,102 @@ export const useUserData = defineBasicLoader("/edit/[id]", async (route) => {
 
 <script setup>
 import { useRoute } from "vue-router";
-import { watch, ref } from "vue";
+import { watch, ref, computed } from "vue";
 import { store } from "../store";
 import { useRouter } from "vue-router";
-const router = useRouter()
+import { importFromStore } from "../../lib/importFromStore";
+const router = useRouter();
 const route = useRoute();
 const { data: meo, isLoading, error, reload } = useUserData();
-const meow =ref(meo)
-watch(meow.value, async (oldMeow, newMeow) => {
-  store.isSaving = true;
-  console.log(newMeow.title);
-  // await editToDb(newMeow)
-  store.isSaving = false;
-});
+// console.log(meow.value)
+const meow = ref(meo.value);
+console.log(meow.title)
+// watch(meow, async (oldMeow, newMeow) => {
+//   store.isSaving = true;
+//   console.log(newMeow.title);
+//   // await editToDb(newMeow)
+//   store.isSaving = false;
+// });
+
+const now = new Date();
+// const computedF = computed({
+//   get() {
+//     return (store.newsContents[0]).title
+//   },
+//   // setter
+//   set(newValue) {
+//     // Note: we are using destructuring assignment syntax here.
+//     [firstName.value, lastName.value] = newValue.split(' ')
+//   }
+// })
+async function returnStore() {
+ const f = await (store.newsContents[0]).title
+ return f
+}
+const refTar = ref(await returnStore())
+console.log(await returnStore())
+console.log(importFromStore(1))
 </script>
 <template>
-  <div class="flex w-full flex-row justify-between items-center">
-    <button class="btn btn-neutral mr-4" @click="router.push('/preview')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>Back to Preview</button>
-    <h2 class="flex grow text-xl">
-      Editing News Content No.{{ route.params.id }}
-    </h2>
-
-    <div v-if="store.isSaving" class="flex-none alert alert-warning">
-      <div
-        class="tooltip tooltip-bottom"
-        data-tip="Changes will be automatically saved"
-      >
-        <span>Saving...</span>
-      </div>
-    </div>
-
-    <div
-      v-else
-      class="tooltip tooltip-bottom flex w-fit alert alert-success"
-      data-tip="Changes will be automatically saved"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 shrink-0 stroke-current"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
+  <div class="flex flex-row items-center justify-between w-full pb-4">
+    <h2 class="flex-none text-xl">Editing No. {{ route.params.id }}</h2>
+    <!-- <button :class="isPreview? 'btn btn-secondary' : 'btn btn-primary'" @click="isPreview = !isPreview">
+     <svg v-if="isPreview"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          class="feather feather-edit"
+        >
+          <path
+            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+          ></path>
+          <path
+            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+          ></path></svg
+        ><svg v-else
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
           stroke-width="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        /></svg
-      ><span>Saved</span>
-    </div>
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-eye"
+        >
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle></svg
+        > <span v-if="isPreview" 
+        >Back to Edit</span
+      >
+      <span v-else >
+        Preview</span
+      >
+    </button> -->
+    <span v-if="store.isSaving" class="text-yellow-300">Saving...</span>
+    <span v-else class="text-lime-500"
+      >Saved at
+      {{
+        Intl.DateTimeFormat("en", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        }).format(new Date())
+      }}
+    </span>
   </div>
-
-  <!-- <span>{{ meow }}</span> -->
-  <div class="card bg-base-100 w-full shadow-xl py-4 flex h-full">
+  <input type="text" class="grow" v-model="refTar.value" @input="store.increment(1, refTar.value)" />
+  <!-- Preview Cards -->
+  <!-- <div class="card bg-base-100 w-full shadow-xl py-4 flex h-full">
     <div class="card-body">
-      <!-- <span>{{ results }}</span> -->
+    
       <label class="input input-bordered flex items-center gap-2">
         Headline:
         <input type="text" class="grow" v-model="meow.title" />
@@ -75,7 +116,9 @@ watch(meow.value, async (oldMeow, newMeow) => {
       <label class="input input-bordered flex items-center gap-2">
         Link:
         <input type="text" class="grow" v-model="meow.link" />
-        <a :href="meow.link">Go to link</a>
+        <a :href="meow.link" target="_blank" rel="noopener noreferrer"
+          >Go to link</a
+        >
       </label>
       <label class="input input-bordered flex items-center gap-2 pr-0">
         Category:
@@ -96,5 +139,5 @@ watch(meow.value, async (oldMeow, newMeow) => {
         class="flex grow textarea shadow-inner rounded-xl px-4 py-2 border-2 border-blue-200 resize-none"
       />
     </div>
-  </div>
+  </div> -->
 </template>
