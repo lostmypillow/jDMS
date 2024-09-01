@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 
+
 export const store = reactive({
   count: 0,
   meow: [1, 2, 3],
@@ -13,9 +14,11 @@ export const store = reactive({
   isImporting: false,
   isSaving: false,
   editContent: {},
-  editTitle() {
-
-  }
+  Qualcomm: [],
+  MediaTek: [],
+  Commu: [],
+  Phone: [],
+  Other: []
 
 
 

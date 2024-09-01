@@ -22,7 +22,7 @@ OtherNews.init(
   {
 
     sequelize,
-    modelName: "QualcommNews",
+    modelName: "OtherNews",
   }
 );
 

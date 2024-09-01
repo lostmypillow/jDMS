@@ -108,12 +108,12 @@ import { getHTML } from "./lib/getHTML.mjs";
 import sequelize from "./config/database.mjs";
 
 app.get("/get/:category/:id", async function (req, res) {
-  await NewsContent.sync();
+  await sequelize.sync();
   let allContent;
   const whichCategoryObject = req.params.category;
   switch (true) {
     case whichCategoryObject == "qualcomm":
-      allContent = req.query.id
+      allContent = req.query.id > 0
         ? await QualcommNews.findByPk(req.query.id)
         : await QualcommNews.findAll();
       break;
@@ -154,7 +154,13 @@ app.post("/import", async function (req, res) {
   const listOfObj = await scrapeContent(await getHTML(listofLinks));
   // const bulkNews = await NewsContent.bulkCreate();
   function splitByCategory(items) {
-    const categories = ["A", "B", "C", "D", "E"];
+    const categories = [
+      "Qualcomm相關新聞",
+      "MediaTek相關新聞",
+      "無線通訊市場",
+      "智慧型手機/消費性電子產品",
+      "其他業界重要訊息",
+    ];
 
     const result = items.reduce((acc, item) => {
       const category = item.category;
@@ -184,7 +190,7 @@ app.post("/import", async function (req, res) {
   await PhoneNews.bulkCreate(PhoneNewsArray);
   await OtherNews.bulkCreate(OtherNewsArray);
   // res.json({ message: `Imported ${bulkNews.length} objects` });
-  res.json(listOfObj);
+  res.json(QualcommNewsArray);
 });
 
 app.post("/update", async function (req, res) {

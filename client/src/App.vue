@@ -17,6 +17,7 @@ import PreviewBtn from "./components/PreviewBtn.vue";
 import TestNav from "./components/TestNav.vue";
 import TestDrawer from "./components/TestDrawer.vue";
 import TestNavDrawer from "./components/TestNavDrawer.vue";
+import { getFromDb } from "../lib/getFromDb";
 
 // await syncToStore("sync", await tellDb("sync"));
 
@@ -42,13 +43,13 @@ import TestNavDrawer from "./components/TestNavDrawer.vue";
 // ];
 console.log(store.newsContents);
 console.log(store.newsContentsByCat);
-const cats = [
-  "Qualcomm相關新聞",
-  "MediaTek相關新聞",
-  "無線通訊市場",
-  "智慧型手機/消費性電子產品",
-  "其他業界重要訊息",
-];
+const cats = {
+  Qualcomm相關新聞: "qualcomm",
+  MediaTek相關新聞: "mediatek",
+  無線通訊市場: "commu",
+  "智慧型手機/消費性電子產品": "phone",
+  其他業界重要訊息: "other",
+};
 // onMounted(async () => {
 //   await syncDbToStore();
 // });
@@ -114,17 +115,19 @@ const navPlaces = [
         </li>
 
         <ul class="flex flex-col items-start gap-2">
-          <li v-for="cat in cats" class="w-full">
+          <li v-for="key in Object.keys(cats)" class="rw-full">
             <h3 class="font-bold">
-              {{ cat }} ({{ getFilteredItems(cat).length }})
+             {{ key }}
             </h3>
 
             <a
-              @click="router.push({ path: `/edit/${s.id}`, replace: true })"
-              v-for="s in getFilteredItems(cat)"
+              @click="
+                router.push({ path: `/edit/${value}/${s.id}`, replace: true })
+              "
+              v-for="s in getFromDb(cats[key])"
               class="indent-8"
             >
-              N0. {{s.id}}: {{ s.title ? s.title :"No Title" }}
+              N0. {{ s.id }}: {{ s.title ? s.title : "No Title" }}
             </a>
           </li>
         </ul>

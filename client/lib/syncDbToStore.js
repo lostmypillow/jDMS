@@ -22,10 +22,10 @@ async function convertList(storeData) {
   }, {});
 }
 export async function syncDbToStore() {
-    const response = await axios.get(import.meta.env.VITE_GET);
-    store.newsContents = await response.data;
-    console.log("syncDbtoStore")
-    console.log(store.newsContents)
-  // store.newsContentsByCat = await convertList(store.newsContents);
+  store.Qualcomm = await (await axios.get("http://localhost:3002/get/qualcomm/0")).data
+  store.MediaTek = await (await axios.get("http://localhost:3002/get/mediatek/0")).data
+  store.Commu = await (await axios.get("http://localhost:3002/get/commu/0")).data
+  store.Phone = await (await axios.get("http://localhost:3002/get/phone/0")).data
+  store.Phone = await (await axios.get("http://localhost:3002/get/other/0")).data
  
 }

@@ -185,7 +185,7 @@ async function scrapeWithCheerio(link, html) {
         }
       });
       content = newarray;
-      console.log(content);
+    
       break;
     ///////
 
@@ -415,7 +415,7 @@ async function scrapeWithCheerio(link, html) {
       //   element.trim()
       // })
 
-      // console.log(content);
+
 
       break;
 

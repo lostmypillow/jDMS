@@ -22,7 +22,7 @@ MediaTekNews.init(
   {
 
     sequelize,
-    modelName: "QualcommNews",
+    modelName: " MediaTekNews",
   }
 );
 
