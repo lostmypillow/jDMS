@@ -2,8 +2,8 @@
 import { defineBasicLoader } from "unplugin-vue-router/data-loaders/basic";
 
 import { importFromStore } from "../../lib/importFromStore";
-export const useUserData = defineBasicLoader("/edit/[id]", async (route) => {
-  return importFromStore(route.params.id);
+export const useUserData = defineBasicLoader("/edit/[category]/[id]", async (route) => {
+  return importFromStore(route.params.category, route.params.id);
 });
 </script>
 
@@ -13,12 +13,13 @@ import { watch, ref, computed } from "vue";
 import { store } from "../store";
 import { useRouter } from "vue-router";
 import { importFromStore } from "../../lib/importFromStore";
+import { editToDb } from "../../lib/editToDb";
 const router = useRouter();
 const route = useRoute();
-const { data: meo, isLoading, error, reload } = useUserData();
+const { data: user, isLoading, error, reload } = useUserData();
 // console.log(meow.value)
-const meow = ref(meo.value);
-console.log(meow.title)
+// const meow = ref(meo.value);
+// console.log(meow.title)
 // watch(meow, async (oldMeow, newMeow) => {
 //   store.isSaving = true;
 //   console.log(newMeow.title);
@@ -33,22 +34,51 @@ const now = new Date();
 //   },
 //   // setter
 //   set(newValue) {
-//     // Note: we are using destructuring assignment syntax here.
+//     // Note: we are using derstructuring assignment syntax here.
 //     [firstName.value, lastName.value] = newValue.split(' ')
 //   }
 // })
-async function returnStore() {
- const f = await (store.newsContents[0]).title
- return f
-}
-const refTar = ref(await returnStore())
-console.log(await returnStore())
-console.log(importFromStore(1))
+// const updatedContent = ref();
+// async function updateToDb(event) {
+//   store.isSaving = true;
+//   const updatedData = event.target.value;
+//   switch (true) {
+//     case event.target.id == "title":
+//       await editToDb(route.params.id, { title: updatedData });
+//       break;
+//     case event.target.id == "date_source_author":
+//       await editToDb(route.params.id, { date_source_author: updatedData });
+//       break;
+//     case event.target.id == "link":
+//       await editToDb(route.params.id, { link: updatedData });
+//       break;
+//     case event.target.id == "category":
+//       await editToDb(route.params.id, { category: updatedData });
+//       break;
+//     case event.target.id == "content":
+//       await editToDb(route.params.id, { content: JSON.stringify(updatedData) });
+//       // console.log(updatedContent.value);
+//       // console.log(store.newsContents[route.params.id - 1].content);
+//       break;
+//     default:
+//       break;
+//   }
+//   store.isSaving = false;
+// }
+// console.log(store.newsContents[route.params.id - 1].content);
+// const computedContent = computed(
+//   () => JSON.parse(store.newsContents[route.params.id - 1].content).join("\n\n")
+
+//   // set(newValue) {
+//   //   // Note: we are using destructuring assignment syntax here.
+//   //   updatedContent.value = JSON.stringify(store.newsContents[route.params.id - 1].content).split("\n\n");
+//   // },
+// );
 </script>
 <template>
   <div class="flex flex-row items-center justify-between w-full pb-4">
     <h2 class="flex-none text-xl">Editing No. {{ route.params.id }}</h2>
-    <!-- <button :class="isPreview? 'btn btn-secondary' : 'btn btn-primary'" @click="isPreview = !isPreview">
+
      <svg v-if="isPreview"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -100,29 +130,62 @@ console.log(importFromStore(1))
       }}
     </span>
   </div>
-  <input type="text" class="grow" v-model="refTar.value" @input="store.increment(1, refTar.value)" />
+  <p v-if="isLoading">Loading...</p>
+    <div v-else-if="error">
+      <p>{{ error.message }}</p>
+      <button @click ="reload()">Retry</button>
+</div>
+    <div v-else>
+      <p>{{ user}}</p>
+</div>
   <!-- Preview Cards -->
+
   <!-- <div class="card bg-base-100 w-full shadow-xl py-4 flex h-full">
     <div class="card-body">
-    
       <label class="input input-bordered flex items-center gap-2">
         Headline:
-        <input type="text" class="grow" v-model="meow.title" />
+        <input
+          @input="updateToDb($event)"
+          id="title"
+          type="text"
+          class="grow"
+          v-model="store.newsContents[route.params.id - 1].title"
+        />
       </label>
       <label class="input input-bordered flex items-center gap-2">
         Date / Source / Author:
-        <input type="text" class="grow" v-model="meow.date_source_author" />
+        <input
+          @input="updateToDb($event)"
+          id="date_source_author"
+          type="text"
+          class="grow"
+          v-model="store.newsContents[route.params.id - 1].date_source_author"
+        />
       </label>
       <label class="input input-bordered flex items-center gap-2">
         Link:
-        <input type="text" class="grow" v-model="meow.link" />
-        <a :href="meow.link" target="_blank" rel="noopener noreferrer"
+        <input
+          @input="updateToDb($event)"
+          id="link"
+          type="text"
+          class="grow"
+          v-model="store.newsContents[route.params.id - 1].link"
+        />
+        <a
+          :href="store.newsContents[route.params.id - 1].link"
+          target="_blank"
+          rel="noopener noreferrer"
           >Go to link</a
         >
       </label>
       <label class="input input-bordered flex items-center gap-2 pr-0">
         Category:
-        <select v-model="meow.category" class="select select-bordered w-full">
+        <select
+          class="select select-bordered w-full"
+          @change="updateToDb($event)"
+          id="category"
+          v-model="store.newsContents[route.params.id - 1].category"
+        >
           <option disabled>Choose Category</option>
           <option value="Qualcomm相關新聞">Qualcomm相關新聞</option>
           <option value="MediaTek相關新聞">MediaTek相關新聞</option>
@@ -135,7 +198,9 @@ console.log(importFromStore(1))
       </label>
       <label class="flex items-center gap-2 pl-4"> Content: </label>
       <textarea
-        v-model="meow.content"
+        @input="updateToDb($event)"
+       
+        id="content"
         class="flex grow textarea shadow-inner rounded-xl px-4 py-2 border-2 border-blue-200 resize-none"
       />
     </div>

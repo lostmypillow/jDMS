@@ -12,7 +12,10 @@ export const store = reactive({
   isStandby: true,
   isImporting: false,
   isSaving: false,
-  editContent: {}
+  editContent: {},
+  editTitle() {
+
+  }
 
 
 

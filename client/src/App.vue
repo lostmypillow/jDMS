@@ -49,9 +49,9 @@ const cats = [
   "智慧型手機/消費性電子產品",
   "其他業界重要訊息",
 ];
-onMounted(async () => {
-  await syncDbToStore();
-});
+// onMounted(async () => {
+//   await syncDbToStore();
+// });
 function getFilteredItems(catId) {
   return store.newsContents.filter((item) => item.category === catId);
 }

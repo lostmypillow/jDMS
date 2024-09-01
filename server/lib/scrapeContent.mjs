@@ -1,6 +1,5 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from "cheerio";
 import { getHTML } from "./getHTML.mjs";
-let failedLinkList = [];
 
 function appendCat(title) {
   switch (true) {
@@ -20,14 +19,15 @@ function appendCat(title) {
       return "其他業界重要訊息";
   }
 }
+let resultList = [];
 
-export async function scrapeContent(link) {
+async function scrapeWithCheerio(link, html) {
   var title = "";
   var date_source_author = "";
   var content = [];
   let dateParts;
   var category = "";
-  const $ = cheerio.load(await getHTML(link));
+  const $ = cheerio.load(html);
 
   switch (true) {
     ///////ctee  、綜合外電
@@ -466,8 +466,17 @@ export async function scrapeContent(link) {
     //2cm
   }
   category = appendCat(title);
-  content = JSON.stringify(content)
+  content = content.join("&#13;");
 
   return { title, date_source_author, category, link, content };
 }
 
+
+export async function scrapeContent(listOfLinkObjects) {
+  for (const linkObject of listOfLinkObjects) {
+    const data = await scrapeWithCheerio(linkObject.link, linkObject.html);
+    resultList.push(data);
+    console.log(data)
+  }
+  return resultList;
+}

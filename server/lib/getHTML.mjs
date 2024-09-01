@@ -1,28 +1,35 @@
 import fetch from "node-fetch";
 import puppeteer from "puppeteer";
+let resultList = [];
 
-async function usingNodeFetch(link) {
-  return await (await fetch(link)).text();
+function pushToList(link, html) {
+  resultList.push({
+    link: link,
+    html: html,
+  });
 }
-
-async function usingPuppeteer(link) {
+export async function getHTML(links) {
+  //links is an array
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
   });
-  const page = await browser.newPage();
-  await page.goto(link, {
-    waitUntil: "domcontentloaded",
-  });
-
-  const html = await page.content();
+  for (const link of links) {
+    if (
+      link.includes("ctee") ||
+      link.includes("chinatimes") ||
+      link.includes("udn")
+    ) {
+      const page = await browser.newPage();
+      await page.goto(link, {
+        waitUntil: "domcontentloaded",
+      });
+      const html = await page.content();
+      pushToList(link, html)
+    } else {
+      pushToList(link, await (await fetch(link)).text())
+    }
+  }
   await browser.close();
-  return html;
+  return resultList
 }
-
-export async function getHTML(link) {
-  return link.includes("ctee") || link.includes("chinatimes") || link.includes("udn")
-    ? await usingPuppeteer(link)
-    : await usingNodeFetch(link);
-}
-
