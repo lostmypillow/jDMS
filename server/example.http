@@ -2,20 +2,18 @@ GET http://localhost:3001/fetch HTTP/1.1
 
 
 ###
-GET http://localhost:3002/get/qualcomm/0 HTTP/1.1
+GET http://localhost:3002/docx HTTP/1.1
 
 
 ###
-GET http://localhost:3002/scrape HTTP/1.1
+GET http://localhost:3002/get/other/6 HTTP/1.1
 
 
 ###
-POST http://localhost:3002/import HTTP/1.1
+POST http://localhost:3002/update/qualcomm/1 HTTP/1.1
 content-type: application/json
 
-{
-    "links": ["https://www.cool3c.com/article/222688", "https://3c.ltn.com.tw/news/59270", "https://www.cool3c.com/article/202079"]
-}
+{ "title": "通驍龍meow" }
 
 
 ###

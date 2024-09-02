@@ -15,14 +15,18 @@
 // }
 // }
 
-export function formatData(data) {
+function formatData(data) {
   const { title, date_source_author, link, content } = data;
+  let newcontent = content.replace(/<br><br>/g, "\n\n");
 
-  const contentArray = JSON.parse(content);
-
-  const contentString = contentArray.join("\n\n");
-
-  return `${title}\n${date_source_author}\n${link}\n${contentString}`;
+  return `${title}\n${date_source_author}\n${link}\n${newcontent}\n\n`;
 }
 
+export function batchFormatData(listOfData) {
+  let wallOfText = "";
+  for (let obj of listOfData) {
+    wallOfText += formatData(obj);
+  }
+  return wallOfText
+}
 // "file:///c:\users\johnny.lin\desktop\2024-08-06 qualcomm dms.docx#TOP"

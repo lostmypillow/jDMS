@@ -6,6 +6,18 @@ import http from "http";
 import logger from "morgan";
 import cors from "cors";
 import path from "path";
+import * as fs from "fs";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  patchDocument,
+  PatchType,
+  ExternalHyperlink,
+} from "docx";
 import { fileURLToPath } from "url";
 import {
   QualcommNews,
@@ -103,40 +115,80 @@ import { scrapeContent } from "./lib/scrapeContent.mjs";
 
 import { Sequelize, DataTypes, Model, Op } from "sequelize";
 
-import * as fs from "fs";
 import { getHTML } from "./lib/getHTML.mjs";
 import sequelize from "./config/database.mjs";
+
+app.get('/docx', (req, res) => {
+  const content = fs.readFileSync(
+    path.resolve(__dirname, "input.docx"),
+    "binary"
+);
+
+// Unzip the content of the file
+const zip = new PizZip(content);
+
+// This will parse the template, and will throw an error if the template is
+// invalid, for example, if the template is "{user" (no closing tag)
+const doc = new Docxtemplater(zip, {
+    paragraphLoop: true,
+    linebreaks: true,
+});
+
+// Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
+doc.render({
+    first_name: "John",
+    last_name: "Doe",
+    phone: "0652455478",
+});
+
+// Get the zip document and generate it as a nodebuffer
+const buf = doc.getZip().generate({
+    type: "nodebuffer",
+    // compression: DEFLATE adds a compression step.
+    // For a 50MB output document, expect 500ms additional CPU time
+    compression: "DEFLATE",
+});
+
+// buf is a nodejs Buffer, you can either write it to a
+// file or res.send it with express for example.
+fs.writeFileSync(path.resolve(__dirname, "output.docx"), buf);
+});
 
 app.get("/get/:category/:id", async function (req, res) {
   await sequelize.sync();
   let allContent;
-  const whichCategoryObject = req.params.category;
+  const sourceCategory = req.params.category;
   switch (true) {
-    case whichCategoryObject == "qualcomm":
-      allContent = req.query.id > 0
-        ? await QualcommNews.findByPk(req.query.id)
-        : await QualcommNews.findAll();
+    case sourceCategory == "qualcomm":
+      allContent =
+        req.params.id > 0
+          ? await QualcommNews.findByPk(req.params.id)
+          : await QualcommNews.findAll();
       break;
-    case whichCategoryObject == "mediatek":
-      allContent = req.query.id
-        ? await MediaTekNews.findByPk(req.query.id)
-        : await MediaTekNews.findAll();
+    case sourceCategory == "mediatek":
+      allContent =
+        req.params.id > 0
+          ? await MediaTekNews.findByPk(req.params.id)
+          : await MediaTekNews.findAll();
       break;
 
-    case whichCategoryObject == "commu":
-      allContent = req.query.id
-        ? await CommuNews.findByPk(req.query.id)
-        : await CommuNews.findAll();
+    case sourceCategory == "commu":
+      allContent =
+        req.params.id > 0
+          ? await CommuNews.findByPk(req.params.id)
+          : await CommuNews.findAll();
       break;
-    case whichCategoryObject == "phone":
-      allContent = req.query.id
-        ? await PhoneNews.findByPk(req.query.id)
-        : await PhoneNews.findAll();
+    case sourceCategory == "phone":
+      allContent =
+        req.params.id > 0
+          ? await PhoneNews.findByPk(req.params.id)
+          : await PhoneNews.findAll();
       break;
-    case whichCategoryObject == "other":
-      allContent = req.query.id
-        ? await OtherNews.findByPk(req.query.id)
-        : await OtherNews.findAll();
+    case sourceCategory == "other":
+      allContent =
+        req.params.id > 0
+          ? await OtherNews.findByPk(req.params.id)
+          : await OtherNews.findAll();
       break;
   }
   res.json(allContent);
@@ -150,6 +202,7 @@ app.get("/flush", async function (req, res) {
 //import accepts an array of links
 app.post("/import", async function (req, res) {
   const listofLinks = req.body.links;
+  await sequelize.drop();
   await sequelize.sync({ force: true });
   const listOfObj = await scrapeContent(await getHTML(listofLinks));
   // const bulkNews = await NewsContent.bulkCreate();
@@ -193,55 +246,119 @@ app.post("/import", async function (req, res) {
   res.json(QualcommNewsArray);
 });
 
-app.post("/update", async function (req, res) {
-  const editID = req.query.id;
-  await NewsContent.update(req.body, {
-    where: {
-      id: editID,
-    },
-  });
+// update/qualcomm/1/
+app.post("/update/:category/:id", async function (req, res) {
+  const sourceCategory = req.params.category;
+  const whichID = req.params.id;
+  const targetCategory = req.query.category;
+  let response;
+  response =
+    sourceCategory === "qualcomm"
+      ? await QualcommNews.update(req.body, { where: { id: whichID } })
+      : sourceCategory === "mediatek"
+      ? await MediaTekNews.update(req.body, { where: { id: whichID } })
+      : sourceCategory === "commu"
+      ? await CommuNews.update(req.body, { where: { id: whichID } })
+      : sourceCategory === "phone"
+      ? await PhoneNews.update(req.body, { where: { id: whichID } })
+      : sourceCategory === "other"
+      ? await OtherNews.update(req.body, { where: { id: whichID } })
+      : undefined;
+  if (targetCategory) {
+    // change category
+    let Data =
+      sourceCategory === "qualcomm"
+        ? await QualcommNews.findByPk(whichID)
+        : sourceCategory === "mediatek"
+        ? await MediaTekNews.findByPk(whichID)
+        : sourceCategory === "commu"
+        ? await CommuNews.findByPk(whichID)
+        : sourceCategory === "phone"
+        ? await PhoneNews.findByPk(whichID)
+        : sourceCategory === "other"
+        ? await OtherNews.findByPk(whichID)
+        : undefined;
+    let sourceData = Data;
+    console.log(sourceData.title);
+    let deleteData =
+      sourceCategory === "qualcomm"
+        ? await QualcommNews.destroy({ where: { id: whichID } })
+        : sourceCategory === "mediatek"
+        ? await MediaTekNews.destroy({ where: { id: whichID } })
+        : sourceCategory === "commu"
+        ? await CommuNews.destroy({ where: { id: whichID } })
+        : sourceCategory === "phone"
+        ? await PhoneNews.destroy({ where: { id: whichID } })
+        : sourceCategory === "other"
+        ? await OtherNews.destroy({ where: { id: whichID } })
+        : undefined;
+    console.log(sourceData.title);
+    sourceData = {
+      title: sourceData.title,
+      date_source_author: sourceData.date_source_author,
+      link: sourceData.link,
+      category: sourceData.category,
+      content: sourceData.content,
+    };
+    let importData =
+      targetCategory === "qualcomm"
+        ? await QualcommNews.create(sourceData)
+        : targetCategory === "mediatek"
+        ? await MediaTekNews.create(sourceData)
+        : targetCategory === "commu"
+        ? await CommuNews.create(sourceData)
+        : targetCategory === "phone"
+        ? await PhoneNews.create(sourceData)
+        : targetCategory === "other"
+        ? await OtherNews.create(sourceData)
+        : undefined;
+  }
+
+  res.json({ status: "ok" });
 });
 
-// update/qualcomm/1/title
-app.post("/update/:category/:id/:field", async function (req, res) {
-  const whichCategoryObject = req.params.category;
+app.post("/delete/:category/:id", async function (req, res) {
+  const sourceCategory = req.params.category;
   const whichID = req.params.id;
-  const whichField = req.params.field;
-  if (whichField == "category") {
+  const isCat = req.query.category;
+  let response;
+
+  if (isCat) {
     // change category
   } else {
     switch (true) {
-      case whichCategoryObject == "qualcomm":
-        await QualcommNews.update(req.body, {
+      case sourceCategory == "qualcomm":
+        response = await QualcommNews.destroy({
           where: {
             id: whichID,
           },
         });
+        console.log("ok");
         break;
-      case whichCategoryObject == "mediatek":
-        await MediaTekNews.update(req.body, {
+      case sourceCategory == "mediatek":
+        response = await MediaTekNews.destroy({
           where: {
             id: whichID,
           },
         });
         break;
 
-      case whichCategoryObject == "commu":
-        await CommuNews.update(req.body, {
+      case sourceCategory == "commu":
+        response = await CommuNews.destroy({
           where: {
             id: whichID,
           },
         });
         break;
-      case whichCategoryObject == "phone":
-        await PhoneNews.update(req.body, {
+      case sourceCategory == "phone":
+        response = await PhoneNews.destroy(body, {
           where: {
             id: whichID,
           },
         });
         break;
-      case whichCategoryObject == "other":
-        await OtherNews.update(req.body, {
+      case sourceCategory == "other":
+        response = await OtherNews.destroy({
           where: {
             id: whichID,
           },
@@ -249,12 +366,7 @@ app.post("/update/:category/:id/:field", async function (req, res) {
         break;
     }
   }
-
-  await NewsContent.update(req.body, {
-    where: {
-      id: whichID,
-    },
-  });
+  res.json({ status: "ok" });
 });
 // https://www.cool3c.com/article/222688
 // https://3c.ltn.com.tw/news/59270

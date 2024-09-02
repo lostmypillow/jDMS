@@ -26,6 +26,6 @@ export async function syncDbToStore() {
   store.MediaTek = await (await axios.get("http://localhost:3002/get/mediatek/0")).data
   store.Commu = await (await axios.get("http://localhost:3002/get/commu/0")).data
   store.Phone = await (await axios.get("http://localhost:3002/get/phone/0")).data
-  store.Phone = await (await axios.get("http://localhost:3002/get/other/0")).data
+  store.Other = await (await axios.get("http://localhost:3002/get/other/0")).data
  
 }

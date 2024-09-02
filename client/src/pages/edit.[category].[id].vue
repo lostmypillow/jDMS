@@ -1,84 +1,99 @@
 <script>
 import { defineBasicLoader } from "unplugin-vue-router/data-loaders/basic";
-
+import { useRoute } from "vue-router";
 import { importFromStore } from "../../lib/importFromStore";
-export const useUserData = defineBasicLoader("/edit/[category]/[id]", async (route) => {
-  return importFromStore(route.params.category, route.params.id);
-});
+import axios from "axios";
+import { syncDbToStore } from "../../lib/syncDbToStore";
+const route = useRoute();
+async function getData(category, id) {
+  const response = await axios.get(
+    "http://localhost:3002/get/" + category + "/" + id
+  );
+  const results = await response.data;
+  console.log("http://localhost:3002/get/" + category + "/" + id);
+  return results;
+}
+export const useUserData = defineBasicLoader(
+  "/edit/[category]/[id]",
+  async (to) => {
+    return getData(to.params.category, to.params.id);
+  }
+);
 </script>
 
 <script setup>
 import { useRoute } from "vue-router";
-import { watch, ref, computed } from "vue";
+import { watch, ref, computed, onMounted } from "vue";
 import { store } from "../store";
 import { useRouter } from "vue-router";
-import { importFromStore } from "../../lib/importFromStore";
-import { editToDb } from "../../lib/editToDb";
+import axios from "axios";
 const router = useRouter();
 const route = useRoute();
 const { data: user, isLoading, error, reload } = useUserData();
-// console.log(meow.value)
-// const meow = ref(meo.value);
-// console.log(meow.title)
-// watch(meow, async (oldMeow, newMeow) => {
-//   store.isSaving = true;
-//   console.log(newMeow.title);
-//   // await editToDb(newMeow)
-//   store.isSaving = false;
-// });
+function returnHRN(name) {
+  return name == "Qualcomm相關新聞"
+    ? "qualcomm"
+    : (name = "MediaTek相關新聞"
+        ? "mediatek"
+        : (name = "無線通訊市場"
+            ? "commu"
+            : (name = "智慧型手機/消費性電子產品" ? "phone" : "other")));
+}
 
-const now = new Date();
-// const computedF = computed({
-//   get() {
-//     return (store.newsContents[0]).title
-//   },
-//   // setter
-//   set(newValue) {
-//     // Note: we are using derstructuring assignment syntax here.
-//     [firstName.value, lastName.value] = newValue.split(' ')
-//   }
-// })
-// const updatedContent = ref();
-// async function updateToDb(event) {
-//   store.isSaving = true;
-//   const updatedData = event.target.value;
-//   switch (true) {
-//     case event.target.id == "title":
-//       await editToDb(route.params.id, { title: updatedData });
-//       break;
-//     case event.target.id == "date_source_author":
-//       await editToDb(route.params.id, { date_source_author: updatedData });
-//       break;
-//     case event.target.id == "link":
-//       await editToDb(route.params.id, { link: updatedData });
-//       break;
-//     case event.target.id == "category":
-//       await editToDb(route.params.id, { category: updatedData });
-//       break;
-//     case event.target.id == "content":
-//       await editToDb(route.params.id, { content: JSON.stringify(updatedData) });
-//       // console.log(updatedContent.value);
-//       // console.log(store.newsContents[route.params.id - 1].content);
-//       break;
-//     default:
-//       break;
-//   }
-//   store.isSaving = false;
-// }
-// console.log(store.newsContents[route.params.id - 1].content);
-// const computedContent = computed(
-//   () => JSON.parse(store.newsContents[route.params.id - 1].content).join("\n\n")
+//   <option value="Qualcomm相關新聞">Qualcomm相關新聞</option>
+{
+  /* <option value="MediaTek相關新聞">MediaTek相關新聞</option>
+          <option value="無線通訊市場">無線通訊市場</option>
+          <option value="智慧型手機/消費性電子產品">
+            智慧型手機/消費性電子產品
+          </option>
+          <option value="其他業界重要訊息">其他業界重要訊息</option> */
+}
+async function updateField(field, data) {
+  const objj = { [field]: data };
+  const url =
+    [field] == "category"
+      ? "http://localhost:3002/update/" +
+        route.params.category +
+        "/" +
+        route.params.id +
+        "?category=" +
+        returnHRN(data)
+      : "http://localhost:3002/update/" +
+        route.params.category +
+        "/" +
+        route.params.id;
 
-//   // set(newValue) {
-//   //   // Note: we are using destructuring assignment syntax here.
-//   //   updatedContent.value = JSON.stringify(store.newsContents[route.params.id - 1].content).split("\n\n");
-//   // },
-// );
+  try {
+    const response = await axios.post(url, objj);
+    console.log(objj);
+    await syncDbToStore();
+  } catch (error) {
+    console.log(error);
+  }
+
+  return true;
+}
+
+const computedUser = computed({
+  get() {
+    return user;
+  },
+  set(newValue) {
+    updatedValue = { ...user, ...newValue };
+    console.log("updated value");
+  },
+});
+const updatedValue = ref();
 </script>
 <template>
   <div class="flex flex-row items-center justify-between w-full pb-4">
-    <h2 class="flex-none text-xl">Editing No. {{ route.params.id }}</h2>
+    <h2 class="flex-none text-xl">
+      Editing {{ route.params.category.toUpperCase() }} No.
+      {{ route.params.id }}
+    </h2>
 
+    <!-- <button>
      <svg v-if="isPreview"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -118,7 +133,11 @@ const now = new Date();
         Preview</span
       >
     </button> -->
-    <span v-if="store.isSaving" class="text-yellow-300">Saving...</span>
+    <span v-if="store.isSaving" class="text-yellow-300">Saving...</span
+    ><span
+      v-else-if="isLoading"
+      class="loading loading-spinner loading-md"
+    ></span>
     <span v-else class="text-lime-500"
       >Saved at
       {{
@@ -130,49 +149,47 @@ const now = new Date();
       }}
     </span>
   </div>
-  <p v-if="isLoading">Loading...</p>
-    <div v-else-if="error">
-      <p>{{ error.message }}</p>
-      <button @click ="reload()">Retry</button>
-</div>
-    <div v-else>
-      <p>{{ user}}</p>
-</div>
+
+  <div v-if="error">
+    <p>{{ error.message }}</p>
+    <button @click="reload()">Retry</button>
+  </div>
+  <div v-else></div>
   <!-- Preview Cards -->
 
-  <!-- <div class="card bg-base-100 w-full shadow-xl py-4 flex h-full">
+  <div class="card bg-base-100 w-full shadow-xl py-4 flex h-full">
     <div class="card-body">
       <label class="input input-bordered flex items-center gap-2">
         Headline:
         <input
-          @input="updateToDb($event)"
+          @input="updateField($event.target.id, $event.target.value)"
           id="title"
           type="text"
           class="grow"
-          v-model="store.newsContents[route.params.id - 1].title"
+          v-model="computedUser.value.title"
         />
       </label>
       <label class="input input-bordered flex items-center gap-2">
         Date / Source / Author:
         <input
-          @input="updateToDb($event)"
+          @input="updateField($event.target.id, $event.target.value)"
           id="date_source_author"
           type="text"
           class="grow"
-          v-model="store.newsContents[route.params.id - 1].date_source_author"
+          v-model="computedUser.value.date_source_author"
         />
       </label>
       <label class="input input-bordered flex items-center gap-2">
         Link:
         <input
-          @input="updateToDb($event)"
+          @input="updateField($event.target.id, $event.target.value)"
           id="link"
           type="text"
           class="grow"
-          v-model="store.newsContents[route.params.id - 1].link"
+          v-model="computedUser.value.link"
         />
         <a
-          :href="store.newsContents[route.params.id - 1].link"
+          :href="computedUser.value.link"
           target="_blank"
           rel="noopener noreferrer"
           >Go to link</a
@@ -182,9 +199,9 @@ const now = new Date();
         Category:
         <select
           class="select select-bordered w-full"
-          @change="updateToDb($event)"
+          @input="updateField($event.target.id, $event.target.value)"
           id="category"
-          v-model="store.newsContents[route.params.id - 1].category"
+          v-model="computedUser.value.category"
         >
           <option disabled>Choose Category</option>
           <option value="Qualcomm相關新聞">Qualcomm相關新聞</option>
@@ -198,11 +215,11 @@ const now = new Date();
       </label>
       <label class="flex items-center gap-2 pl-4"> Content: </label>
       <textarea
-        @input="updateToDb($event)"
-       
+        @input="updateField($event.target.id, $event.target.value)"
+        v-model="computedUser.value.content"
         id="content"
         class="flex grow textarea shadow-inner rounded-xl px-4 py-2 border-2 border-blue-200 resize-none"
       />
     </div>
-  </div> -->
+  </div>
 </template>
