@@ -118,40 +118,40 @@ import { Sequelize, DataTypes, Model, Op } from "sequelize";
 import { getHTML } from "./lib/getHTML.mjs";
 import sequelize from "./config/database.mjs";
 
-app.get('/docx', (req, res) => {
+app.get("/docx", (req, res) => {
   const content = fs.readFileSync(
     path.resolve(__dirname, "input.docx"),
     "binary"
-);
+  );
 
-// Unzip the content of the file
-const zip = new PizZip(content);
+  // Unzip the content of the file
+  const zip = new PizZip(content);
 
-// This will parse the template, and will throw an error if the template is
-// invalid, for example, if the template is "{user" (no closing tag)
-const doc = new Docxtemplater(zip, {
+  // This will parse the template, and will throw an error if the template is
+  // invalid, for example, if the template is "{user" (no closing tag)
+  const doc = new Docxtemplater(zip, {
     paragraphLoop: true,
     linebreaks: true,
-});
+  });
 
-// Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-doc.render({
+  // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
+  doc.render({
     first_name: "John",
     last_name: "Doe",
     phone: "0652455478",
-});
+  });
 
-// Get the zip document and generate it as a nodebuffer
-const buf = doc.getZip().generate({
+  // Get the zip document and generate it as a nodebuffer
+  const buf = doc.getZip().generate({
     type: "nodebuffer",
     // compression: DEFLATE adds a compression step.
     // For a 50MB output document, expect 500ms additional CPU time
     compression: "DEFLATE",
-});
+  });
 
-// buf is a nodejs Buffer, you can either write it to a
-// file or res.send it with express for example.
-fs.writeFileSync(path.resolve(__dirname, "output.docx"), buf);
+  // buf is a nodejs Buffer, you can either write it to a
+  // file or res.send it with express for example.
+  fs.writeFileSync(path.resolve(__dirname, "output.docx"), buf);
 });
 
 app.get("/get/:category/:id", async function (req, res) {
@@ -191,6 +191,7 @@ app.get("/get/:category/:id", async function (req, res) {
           : await OtherNews.findAll();
       break;
   }
+
   res.json(allContent);
 });
 
@@ -237,13 +238,49 @@ app.post("/import", async function (req, res) {
     PhoneNewsArray,
     OtherNewsArray,
   ] = splitByCategory(listOfObj);
-  await QualcommNews.bulkCreate(QualcommNewsArray);
-  await MediaTekNews.bulkCreate(MediaTekNewsArray);
-  await CommuNews.bulkCreate(CommuNewsArray);
-  await PhoneNews.bulkCreate(PhoneNewsArray);
-  await OtherNews.bulkCreate(OtherNewsArray);
-  // res.json({ message: `Imported ${bulkNews.length} objects` });
-  res.json(QualcommNewsArray);
+
+  for (let i = 0; i < QualcommNewsArray.length; i++) {
+    const a = QualcommNewsArray[i].url
+      ? await QualcommNews.findOrCreate({
+          where: { url: QualcommNewsArray[i].url },
+          defaults: QualcommNewsArray[i],
+        })
+      : "";
+  }
+  for (let i = 0; i < MediaTekNewsArray.length; i++) {
+    const a = MediaTekNewsArray[i].url
+      ? await MediaTekNews.findOrCreate({
+          where: { url: MediaTekNewsArray[i].url },
+          defaults: MediaTekNewsArray[i],
+        })
+      : "";
+  }
+  for (let i = 0; i < CommuNewsArray.length; i++) {
+    const a = CommuNewsArray[i].url
+      ? await CommuNews.findOrCreate({
+          where: { url: CommuNewsArray[i].url },
+          defaults: CommuNewsArray[i],
+        })
+      : "";
+  }
+  for (let i = 0; i < PhoneNewsArray.length; i++) {
+    const a = PhoneNewsArray[i].url
+      ? await PhoneNews.findOrCreate({
+          where: { url: PhoneNewsArray[i].url },
+          defaults: PhoneNewsArray[i],
+        })
+      : "";
+  }
+  for (let i = 0; i < OtherNewsArray.length; i++) {
+    const a = OtherNewsArray[i].url
+      ? await OtherNews.findOrCreate({
+          where: { url: OtherNewsArray[i].url },
+          defaults: OtherNewsArray[i],
+        })
+      : "";
+  }
+  // console.log("created Other News in db: ", await OtherNews.findAll())
+  res.send("ok");
 });
 
 // update/qualcomm/1/

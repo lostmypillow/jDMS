@@ -9,7 +9,7 @@ PhoneNews.init(
     date_source_author: {
       type: DataTypes.STRING,
     },
-    link: {
+    url: {
       type: DataTypes.STRING,
     },
     content: {

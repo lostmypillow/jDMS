@@ -47,8 +47,8 @@ const router = useRouter();
         {{ res.date_source_author }}
       </p>
 
-      <a :href="res.link">
-        {{ res.link }}
+      <a :href="res.url">
+        {{ res.url }}
       </a>
 
       <div class="badge badge-primary">

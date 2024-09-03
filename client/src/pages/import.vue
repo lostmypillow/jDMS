@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 const links = ref();
+import { store } from "../store";
 import { importToDb } from "../../lib/importToDb";
 const isStandby = ref(true);
 const isLoading = ref(false);
@@ -24,6 +25,16 @@ async function submitForm() {
 <template>
   <div class="flex flex-row items-center justify-between w-full pb-4">
     <h2 class="flex-none text-xl">Import Links</h2>
+
+    <div class="flex flex-row gap-2">
+      <span v-if="store.isReceiving" class="loading loading-spinner loading-sm text-yellow-400"></span>
+        <p v-if="store.isReceiving" class="text-yellow-400">Receiving Links
+        from LINE bot</p>
+      
+        <p v-else class="text-lime-400">Listening for links from LINE bot</p>
+ </div
+      >
+
     <button
       :class="
         isLoading

@@ -4,7 +4,7 @@ let resultList = [];
 
 function pushToList(link, html) {
   resultList.push({
-    link: link,
+    url: link,
     html: html,
   });
 }

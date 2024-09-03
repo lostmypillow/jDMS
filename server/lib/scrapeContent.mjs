@@ -21,12 +21,13 @@ function appendCat(title) {
 }
 let resultList = [];
 
-async function scrapeWithCheerio(link, html) {
+async function scrapeWithCheerio(url, html) {
   var title = "";
   var date_source_author = "";
   var content = [];
   let dateParts;
   var category = "";
+  let link = url
   const $ = cheerio.load(html);
 
   switch (true) {
@@ -468,13 +469,13 @@ async function scrapeWithCheerio(link, html) {
   category = appendCat(title);
   content = content.join("<br><br>");
 
-  return { title, date_source_author, category, link, content };
+  return { title, date_source_author, category, url, content };
 }
 
 
 export async function scrapeContent(listOfLinkObjects) {
   for (const linkObject of listOfLinkObjects) {
-    const data = await scrapeWithCheerio(linkObject.link, linkObject.html);
+    const data = await scrapeWithCheerio(linkObject.url, linkObject.html);
     resultList.push(data);
     console.log(data)
   }

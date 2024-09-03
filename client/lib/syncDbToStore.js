@@ -1,5 +1,6 @@
 import { store } from "../src/store";
 import axios from "axios";
+import { importToDb } from "./importToDb";
 async function convertList(storeData) {
   return storeData.reduce((acc, article) => {
     if (!article.category) return acc;

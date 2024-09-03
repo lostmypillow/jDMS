@@ -18,7 +18,9 @@ export const store = reactive({
   MediaTek: [],
   Commu: [],
   Phone: [],
-  Other: []
+  Other: [],
+  isReceiving: false,
+  fromFire: []
 
 
 

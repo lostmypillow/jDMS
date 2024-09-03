@@ -1,60 +1,77 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
-// The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-
-
-const {onDocumentCreated} = require("firebase-functions/v2/firestore");
-
-// The Firebase Admin SDK to access Firestore.
-const {initializeApp} = require("firebase-admin/app");
-const {getFirestore} = require("firebase-admin/firestore");
-
+const { onRequest } = require("firebase-functions/v2/https");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
+const https = require("https");
+const TOKEN =
+  "sPG4KE13zYqCaelVJCXHqOpB1jt+N49pmFgpukjxT6E/Wg5V/1+goJ+dHUiu8r0molbYThpO3CxXTvjJgAcHlsdsGOv8iAujjvZ80n7MBrPUAm1kBpMpsR5sxX4bWqg5sgL37TRl0hMOv0ho7PsQEQdB04t89/1O/w1cDnyilFU=";
+let response;
 initializeApp();
+const db = getFirestore();
+exports.addLink = onRequest({ cors: true, region: "asia-east1" }, async (req, res) => {
+  async function saveToFireStore(newLink) {
+    const now = new Date();
+    const collectionName = String(now.getFullYear());
+    const documentName = `${String(now.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}${String(now.getDate()).padStart(2, "0")}`;
+    let linksArray = [];
+    let results;
+    try {
+      const docRef = db.collection(collectionName).doc(documentName);
+      var existingLinks = await docRef.get();
+      const existingLinksSet = existingLinks.exists
+        ? new Set(await existingLinks.data().links)
+        : new Set([]);
+      existingLinksSet.add(newLink);
+      linksArray = Array.from(existingLinksSet);
+      await docRef.set({ links: linksArray });
+      results = "Link saved";
+    } catch (error) {
+      results = error;
+    }
+    return results;
+  }
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+  if (req.body.events[0].type === "message") {
+    response = await saveToFireStore(req.body.events[0].message.text);
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-// Take the text parameter passed to this HTTP endpoint and insert it into
-// Firestore under the path /messages/:documentId/original
-exports.addmessage = onRequest(async (req, res) => {
-    // Grab the text parameter.
-    const original = req.query.text;
-    // Push the new message into Firestore using the Firebase Admin SDK.
-    const writeResult = await getFirestore()
-        .collection("messages")
-        .add({original: original});
-    // Send back a message that we've successfully written the message
-    res.json({result: `Message with ID: ${writeResult.id} added.`});
-  });
-// Listens for new messages added to /messages/:documentId/original
-// and saves an uppercased version of the message
-// to /messages/:documentId/uppercase
-exports.makeuppercase = onDocumentCreated("/messages/{documentId}", (event) => {
-    // Grab the current value of what was written to Firestore.
-    const original = event.data.data().original;
-  
-    // Access the parameter `{documentId}` with `event.params`
-    logger.log("Uppercasing", event.params.documentId, original);
-  
-    const uppercase = original.toUpperCase();
-  
-    // You must return a Promise when performing
-    // asynchronous tasks inside a function
-    // such as writing to Firestore.
-    // Setting an 'uppercase' field in Firestore document returns a Promise.
-    return event.data.ref.set({uppercase}, {merge: true});
-  });
-    
+    const dataString = JSON.stringify({
+      replyToken: req.body.events[0].replyToken,
+      messages: [
+        {
+          type: "text",
+          text: await response,
+        },
+      ],
+    });
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + TOKEN,
+    };
+
+    const webhookOptions = {
+      hostname: "api.line.me",
+      path: "/v2/bot/message/reply",
+      method: "POST",
+      headers: headers,
+      body: dataString,
+    };
+
+    const request = https.request(webhookOptions, (res) => {
+      res.on("data", (d) => {
+        process.stdout.write(d);
+      });
+    });
+
+    request.on("error", (err) => {
+      console.error(err);
+    });
+
+    request.write(dataString);
+    request.end();
+  }
+
+  res.send(response);
+});

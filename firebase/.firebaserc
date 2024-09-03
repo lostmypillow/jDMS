@@ -3,6 +3,10 @@
     "staging": "jdms-63d90"
   },
   "targets": {},
-  "etags": {},
+  "etags": {
+    "jdms-63d90": {
+      "extensionInstances": {}
+    }
+  },
   "dataconnectEmulatorConfig": {}
 }

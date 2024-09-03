@@ -146,10 +146,10 @@ const updatedValue = ref();
           id="link"
           type="text"
           class="grow"
-          v-model="computedUser.value.link"
+          v-model="computedUser.value.url"
         />
         <a
-          :href="computedUser.value.link"
+          :href="computedUser.value.url"
           target="_blank"
           rel="noopener noreferrer"
           >Go to link</a
