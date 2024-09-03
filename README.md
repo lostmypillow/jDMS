@@ -2,6 +2,11 @@
 ## What is it?
 A full stack web scraper to automate my daily task in the company I intern in.
 
+## How does it work?
+
+
+
+
 ## Screenshots of current build
 
 ![Screenshot 2024-09-02 at 17-29-21 JDMS](https://github.com/user-attachments/assets/1e5d1025-dba6-401e-ab18-1d9a1a3cecdc)
@@ -9,11 +14,13 @@ A full stack web scraper to automate my daily task in the company I intern in.
 
 ![Screenshot 2024-09-02 at 17-29-47 JDMS](https://github.com/user-attachments/assets/dcba3324-a464-4226-b28e-0d937132daf7)
 
-## How does it work?
-TBA
+
    
 ## Tech Stack
 - **Express** API endpoints
 - **Puppeteer** and **Cheerio** for HTML download and traversing
 
- 
+## Download Link
+(TBA)
+
+## LINE Bot QR Code
