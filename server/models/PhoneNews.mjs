@@ -18,6 +18,11 @@ PhoneNews.init(
     category: {
       type: DataTypes.STRING,
     },
+    priority: {
+      type: DataTypes.INTEGER,  // Lower number means higher priority
+      allowNull: false,
+      defaultValue: 0,
+    }
   },
   {
 
@@ -25,5 +30,11 @@ PhoneNews.init(
     modelName: "PhoneNews",
   }
 );
+PhoneNews.addHook('beforeCreate', async (task, options) => {
+  // Find the maximum priority value in the table
+  const maxPriority = await PhoneNews.max('priority');
 
+  // Set the new task's priority to be one greater than the current maximum
+  task.priority = (maxPriority !== null ? maxPriority : 0) + 1;
+});
 export default PhoneNews

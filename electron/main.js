@@ -1,6 +1,17 @@
 const { app, BrowserWindow } = require("electron/main");
 
 const createWindow = () => {
+  const child = utilityProcess.fork(path.join(__dirname, "app-out.js"), [], {
+    stdio: "pipe",
+  });
+
+  child.stdout.on("data", (data) => {
+    console.log(`Express server output: ${data}`);
+  });
+
+  child.on("exit", (code) => {
+    console.log(`Express server exited with code ${code}`);
+  });
   const win = new BrowserWindow({ show: false });
 
   win.loadFile("index.html");
@@ -16,17 +27,6 @@ app.whenReady().then(() => {
     }
   });
   // Start the Express server as a utility process
-  const child = utilityProcess.fork(path.join(__dirname, "app-out.js"), [], {
-    stdio: "pipe",
-  });
-
-  child.stdout.on("data", (data) => {
-    console.log(`Express server output: ${data}`);
-  });
-
-  child.on("exit", (code) => {
-    console.log(`Express server exited with code ${code}`);
-  });
 });
 
 app.on("window-all-closed", () => {

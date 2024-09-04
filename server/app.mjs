@@ -163,32 +163,42 @@ app.get("/get/:category/:id", async function (req, res) {
       allContent =
         req.params.id > 0
           ? await QualcommNews.findByPk(req.params.id)
-          : await QualcommNews.findAll();
+          : await QualcommNews.findAll({
+              order: [["priority", "ASC"]], // ASC for higher priority first
+            });
       break;
     case sourceCategory == "mediatek":
       allContent =
         req.params.id > 0
           ? await MediaTekNews.findByPk(req.params.id)
-          : await MediaTekNews.findAll();
+          : await MediaTekNews.findAll({
+              order: [["priority", "ASC"]], // ASC for higher priority first
+            });
       break;
 
     case sourceCategory == "commu":
       allContent =
         req.params.id > 0
           ? await CommuNews.findByPk(req.params.id)
-          : await CommuNews.findAll();
+          : await CommuNews.findAll({
+              order: [["priority", "ASC"]], // ASC for higher priority first
+            });
       break;
     case sourceCategory == "phone":
       allContent =
         req.params.id > 0
           ? await PhoneNews.findByPk(req.params.id)
-          : await PhoneNews.findAll();
+          : await PhoneNews.findAll({
+              order: [["priority", "ASC"]], // ASC for higher priority first
+            });
       break;
     case sourceCategory == "other":
       allContent =
         req.params.id > 0
           ? await OtherNews.findByPk(req.params.id)
-          : await OtherNews.findAll();
+          : await OtherNews.findAll({
+              order: [["priority", "ASC"]], // ASC for higher priority first
+            });
       break;
   }
 
@@ -405,6 +415,25 @@ app.post("/delete/:category/:id", async function (req, res) {
   }
   res.json({ status: "ok" });
 });
+
+app.post("/swap/:category/:priority1/:priority2", async function (req, res) {
+  // store which category it is
+  // if direction is up, find obj with priority of priority and priority -1
+  // if down, ... + 1
+  // swap(obj1, obj2) 
+  // in the swap function:
+  // store initial value = obj1.priority
+  // update obj1.priority equals ob2.priority
+  //update obj2.priority = initialvalue
+  //res.send("ok")
+  try {
+    await OtherNews.swapPriorities(req.params.priority1, req.params.priority2)
+  } catch (error) {
+    
+  }
+  console.log(req.params.category, req.params.priority1)
+  res.send("ok")
+}); 
 // https://www.cool3c.com/article/222688
 // https://3c.ltn.com.tw/news/59270
 export default app;

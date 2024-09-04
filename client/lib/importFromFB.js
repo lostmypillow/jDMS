@@ -28,9 +28,6 @@ export async function importFromFB() {
       console.log("new Snapshot: ", snapshotLinks.value);
       store.isReceiving = !store.isReceiving;
     });
-    // store.fromFire = [
-    //   "https://www.cool3c.com/article/223680",
-    //   "https://www.chinatimes.com/realtimenews/20240902002984-260410?chdtv",
-    // ];
+    
     await importToDb(store.fromFire)
 }

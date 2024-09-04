@@ -20,6 +20,7 @@ const navPlaces = [
     link: "/export",
   },
 ];
+
 const router = useRouter();
 const route = useRoute();
 </script>

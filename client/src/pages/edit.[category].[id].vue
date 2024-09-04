@@ -30,25 +30,10 @@ import axios from "axios";
 const router = useRouter();
 const route = useRoute();
 const { data: user, isLoading, error, reload } = useUserData();
-function returnHRN(name) {
-  return name == "Qualcomm相關新聞"
-    ? "qualcomm"
-    : (name = "MediaTek相關新聞"
-        ? "mediatek"
-        : (name = "無線通訊市場"
-            ? "commu"
-            : (name = "智慧型手機/消費性電子產品" ? "phone" : "other")));
-}
 
-//   <option value="Qualcomm相關新聞">Qualcomm相關新聞</option>
-{
-  /* <option value="MediaTek相關新聞">MediaTek相關新聞</option>
-          <option value="無線通訊市場">無線通訊市場</option>
-          <option value="智慧型手機/消費性電子產品">
-            智慧型手機/消費性電子產品
-          </option>
-          <option value="其他業界重要訊息">其他業界重要訊息</option> */
-}
+// function for return Human Readable Names
+import { returnHRN } from "../../lib/returnHRN";
+
 async function updateField(field, data) {
   const objj = { [field]: data };
   const url =
@@ -89,7 +74,7 @@ const updatedValue = ref();
 <template>
   <div class="flex flex-row items-center justify-between w-full pb-4">
     <h2 class="flex-none text-xl">
-      Editing {{ route.params.category.toUpperCase() }} No.
+      Editing {{ route.params.category.toUpperCase() }} ID.
       {{ route.params.id }}
     </h2>
 
@@ -112,7 +97,7 @@ const updatedValue = ref();
 
   <div v-if="error">
     <p>{{ error.message }}</p>
-    <button @click="reload()">Retry</button>
+    <button class="btn" @click="reload()">Retry</button>
   </div>
   <div v-else></div>
   <!-- Preview Cards -->
