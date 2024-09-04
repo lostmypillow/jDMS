@@ -26,6 +26,14 @@ const route = useRoute();
 </script>
 <template>
   <li v-for="place in navPlaces">
+
+    <a
+      @click="router.push("/")"
+      :class="route.path ==  '/' ? 'btn btn-primary' : 'btn'"
+    >
+      <CustomSVG type="Home" />
+      Home</a
+    >
     <a
       @click="router.push(place.link)"
       :class="route.path == place.link ? 'btn btn-primary' : 'btn'"

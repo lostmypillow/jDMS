@@ -467,7 +467,7 @@ async function scrapeWithCheerio(url, html) {
     //2cm
   }
   category = appendCat(title);
-  content = content.join("<br><br>");
+  content = content.join("\n\n");
 
   return { title, date_source_author, category, url, content };
 }

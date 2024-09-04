@@ -2,7 +2,7 @@
 
 
 import { useClipboard } from "@vueuse/core";
-import { batchFormatData } from "../../lib/batchFormatData";
+import { batchFormatData } from "../../lib/formatData";
 import { store } from "../store";
 const { text, copy, copied, isSupported } = useClipboard();
 const allContent  = [...store.Qualcomm, ...store.MediaTek, ...store.Commu, ...store.Phone, ...store.Other]

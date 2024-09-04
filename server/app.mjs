@@ -118,7 +118,7 @@ import { Sequelize, DataTypes, Model, Op } from "sequelize";
 import { getHTML } from "./lib/getHTML.mjs";
 import sequelize from "./config/database.mjs";
 
-app.get("/docx", (req, res) => {
+app.get("/docx", async (req, res) => {
   const content = fs.readFileSync(
     path.resolve(__dirname, "input.docx"),
     "binary"
@@ -134,12 +134,79 @@ app.get("/docx", (req, res) => {
     linebreaks: true,
   });
 
+  // const mediatekTOCs = [];
+  // const commuTOCs = [];
+  // const phoneTOCs = [];
+  // const otherTOCs = [];
+  // // const qualcommList = [];
+
+  // const mediatekList = [];
+  // const commuList = [];
+  // const phoneList = [];
+  /**
+   * Fetches and processes data from a Sequelize model.
+   * @param {Model} model - The Sequelize model to query.
+   * @returns {Object} An object containing the processed data and Table of Contents (TOCs).
+   */
+  async function fetchDataAndProcess(model) {
+    // Fetch data from the model
+    const data = await model.findAll({
+      raw: true,
+      order: [["priority", "ASC"]],
+    });
+    console.log(data);
+    // Process the data to structure the content
+    const processedData =
+      data.length > 0
+        ? data.map((item) => {
+            const { content, ...otherAttributes } = item;
+            const splitContent = content.split("\n\n");
+            const resultContent = splitContent.map((it) => ({ para: it }));
+            return { ...otherAttributes, content: resultContent };
+          })
+        : data;
+
+    // Generate Table of Contents (TOCs)
+    const toc =
+      data.length > 0
+        ? data.map((obj) => obj["title"]).map((item) => ({ headline: item }))
+        : data;
+
+    return { processedData, toc };
+  }
+
+  // Example usage with QualcommNews model
+  const { processedData: qualcommList, toc: qualcommTOCs } =
+    await fetchDataAndProcess(QualcommNews);
+  const { processedData: mediatekList, toc: mediatekTOCs } =
+    await fetchDataAndProcess(MediaTekNews);
+  const { processedData: commuList, toc: commuTOCs } =
+    await fetchDataAndProcess(CommuNews);
+  const { processedData: phoneList, toc: phoneTOCs } =
+    await fetchDataAndProcess(PhoneNews);
+  const { processedData: otherList, toc: otherTOCs } =
+    await fetchDataAndProcess(OtherNews);
+  const data = {
+    date: new Date().toISOString().split("T")[0],
+    qualcommTOCs: qualcommTOCs,
+    mediatekTOCs: mediatekTOCs,
+    commuTOCs: commuTOCs,
+    phoneTOCs: phoneTOCs,
+    otherTOCs: otherTOCs,
+    qualcommList: qualcommList,
+    mediatekList: mediatekList,
+    commuList: commuList,
+    phoneList: phoneList,
+    otherList: otherList,
+  };
+
+  // const transformedData = {
+  //   ...data, // Spread the existing data
+  //   items: data.qualcommTOCs.map(item => ({ headline: item })) // Transform text items into objects
+  // };
+
   // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-  doc.render({
-    first_name: "John",
-    last_name: "Doe",
-    phone: "0652455478",
-  });
+  doc.render(data);
 
   // Get the zip document and generate it as a nodebuffer
   const buf = doc.getZip().generate({
@@ -151,7 +218,13 @@ app.get("/docx", (req, res) => {
 
   // buf is a nodejs Buffer, you can either write it to a
   // file or res.send it with express for example.
-  fs.writeFileSync(path.resolve(__dirname, "output.docx"), buf);
+  fs.writeFileSync(
+    path.resolve(
+      __dirname,
+      new Date().toISOString().split("T")[0] + " Qualcomm DMS.docx"
+    ),
+    buf
+  );
 });
 
 app.get("/get/:category/:id", async function (req, res) {
@@ -420,20 +493,18 @@ app.post("/swap/:category/:priority1/:priority2", async function (req, res) {
   // store which category it is
   // if direction is up, find obj with priority of priority and priority -1
   // if down, ... + 1
-  // swap(obj1, obj2) 
+  // swap(obj1, obj2)
   // in the swap function:
   // store initial value = obj1.priority
   // update obj1.priority equals ob2.priority
   //update obj2.priority = initialvalue
   //res.send("ok")
   try {
-    await OtherNews.swapPriorities(req.params.priority1, req.params.priority2)
-  } catch (error) {
-    
-  }
-  console.log(req.params.category, req.params.priority1)
-  res.send("ok")
-}); 
+    await OtherNews.swapPriorities(req.params.priority1, req.params.priority2);
+  } catch (error) {}
+  console.log(req.params.category, req.params.priority1);
+  res.send("ok");
+});
 // https://www.cool3c.com/article/222688
 // https://3c.ltn.com.tw/news/59270
 export default app;

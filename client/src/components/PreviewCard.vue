@@ -2,6 +2,7 @@
 const props = defineProps(["storeLocation"]);
 
 import { useRouter } from "vue-router";
+import { formatAsHTML, formatAsNewLine } from "../../lib/formatData";
 
 const router = useRouter();
 </script>
@@ -55,7 +56,9 @@ const router = useRouter();
         {{ res.category }}
       </div>
 
-      <p v-html="res.content"></p>
+    
+
+      <p v-html="formatAsHTML(res.content)"></p>
     </div>
     <div class="flex card-actions p-8 justify-end">
     
