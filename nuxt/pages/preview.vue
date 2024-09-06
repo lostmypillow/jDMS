@@ -1,4 +1,6 @@
 <script setup>
+import { timestamp } from "@vueuse/core";
+
 const navPlaces = [
   "All",
   "Qualcomm相關新聞",
@@ -23,11 +25,28 @@ const items = [
   },
 ];
 
-const userName = ref('')
+const userName = ref("");
 
-function handleSubmit () {
-        console.log(userName.value)
-      }
+function handleSubmit() {
+  console.log(userName.value);
+}
+
+let subtitle_file;
+const listofLyrics = ref([]);
+const listy = [
+  {
+    text: "efnkwnekf",
+    number: 3,
+  },
+  {
+    text: "efnkwwfdekf",
+    number: 3,
+  },
+  {
+    text: "efnkwnekf",
+    number: 3,
+  },
+];
 </script>
 <template>
   <div class="w-full">
@@ -41,23 +60,20 @@ function handleSubmit () {
           <div class="flex-none w-1/5">
             <v-list :items="items" item-title="name" item-value="id"></v-list>
           </div>
-          <div class="grow"><v-form @submit.prevent="handleSubmit">
-          <v-text-field
-            v-model="userName"
-            label="User name"
-          ></v-text-field>
+          <div class="grow">
+            <v-form @submit.prevent="handleSubmit">
+              <v-text-field v-model="userName" label="User name"></v-text-field>
 
-          <v-btn
-            :loading="loading"
-            class="mt-2"
-            text="Submit"
-            type="submit"
-            block
-          ></v-btn>
-        </v-form></div>
+              <v-btn
+                :loading="loading"
+                class="mt-2"
+                text="Submit"
+                type="submit"
+                block
+              ></v-btn>
+            </v-form>
+          </div>
         </div>
-
-        
       </v-tabs-window-item>
 
       <v-tabs-window-item value="two"> Two </v-tabs-window-item>
@@ -65,6 +81,10 @@ function handleSubmit () {
       <v-tabs-window-item value="three"> Three </v-tabs-window-item>
     </v-tabs-window>
   </div>
+
+  <p v-for="i of listy">
+    {{ i.text }}
+  </p>
 </template>
 <script>
 export default {

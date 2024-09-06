@@ -10,12 +10,12 @@ import { importFromFB } from "../lib/importFromFB";
 import { store } from "./store";
 import { importToDb } from "../lib/importToDb";
 onMounted(async () => {
-  // await importFromFB();
-  store.fromFire = [
-    "https://www.cool3c.com/article/223680",
-    "https://www.chinatimes.com/realtimenews/20240902002984-260410?chdtv",
-  ];
-  await importToDb(store.fromFire)
+  await importFromFB();
+  // store.fromFire = [
+  //   "https://www.cool3c.com/article/223680",
+  //   "https://www.chinatimes.com/realtimenews/20240902002984-260410?chdtv",
+  // ];
+  // await importToDb(store.fromFire)
 });
 </script>
 

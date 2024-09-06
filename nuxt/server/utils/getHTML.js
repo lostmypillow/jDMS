@@ -7,7 +7,31 @@ function pushToList(link, html) {
     html: html,
   });
 }
+function filterArray(arr) {
+  var puppeteerLinks = arr.filter(
+    (link) =>
+      link.includes("ctee") ||
+      link.includes("chinatimes") ||
+      link.includes("udn")
+  );
+  const fetchLinks = arr.filter(
+    (link) =>
+      !link.includes("ctee") &&
+      !link.includes("chinatimes") &&
+      !link.includes("udn")
+  );
+}
 
+// splits single array into two
+// fetch first
+// then puppeteer
+//then push to list
+//return list
+async function processLinks(listy) {
+  let resultList2;
+  const { fetchLinks, puppeteerLinks } = filterArray(listy);
+  
+}
 
 export default async function (links) {
   //links is an array
@@ -26,15 +50,11 @@ export default async function (links) {
         waitUntil: "domcontentloaded",
       });
       const html = await page.content();
-      pushToList(link, html)
+      pushToList(link, html);
     } else {
-      const response = await $fetch(link)
-      pushToList(link, await response)
-      // console.log(await response)
+      pushToList(link, await getWithFetch(link));
     }
   }
   await browser.close();
-  return resultList1
+  return resultList1;
 }
-
-

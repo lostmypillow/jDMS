@@ -4,6 +4,10 @@ import { Model, DataTypes } from 'sequelize';
 const Content = sequelize.define(
   'content',
   {
+    uuid: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+    },
     title: {
       type: DataTypes.STRING,
     },
@@ -17,13 +21,7 @@ const Content = sequelize.define(
       type: DataTypes.STRING,
     },
     category: {
-      type: DataTypes.ENUM(
-        'Qualcomm相關新聞',
-        'MediaTek相關新聞',
-        '無線通訊市場',
-        '智慧型手機/消費性電子產品',
-        '其他業界重要訊息'
-      ),
+      type: DataTypes.STRING,
     },
     priority: {
       type: DataTypes.INTEGER,
@@ -62,4 +60,14 @@ const assignPriority = async (category) => {
   return count + 1;
 };
 
+
+// category: {
+//   type: DataTypes.ENUM(
+//     'Qualcomm相關新聞',
+//     'MediaTek相關新聞',
+//     '無線通訊市場',
+//     '智慧型手機/消費性電子產品',
+//     '其他業界重要訊息'
+//   ),
+// },
 export default Content;
