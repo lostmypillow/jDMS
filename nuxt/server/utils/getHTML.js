@@ -30,7 +30,6 @@ function filterArray(arr) {
 async function processLinks(listy) {
   let resultList2;
   const { fetchLinks, puppeteerLinks } = filterArray(listy);
-  
 }
 
 export default async function (links) {

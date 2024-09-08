@@ -4,9 +4,11 @@ import { Model, DataTypes } from 'sequelize';
 const Content = sequelize.define(
   'content',
   {
-    uuid: {
+    id: {
       type: DataTypes.UUID,
-      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true
     },
     title: {
       type: DataTypes.STRING,
@@ -16,6 +18,7 @@ const Content = sequelize.define(
     },
     url: {
       type: DataTypes.STRING,
+      allowNull: true
     },
     content: {
       type: DataTypes.STRING,

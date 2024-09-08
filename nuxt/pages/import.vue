@@ -23,52 +23,70 @@ const isSuccess = ref(false);
 // }
 
 // const {data: count} = await useFetch('https://www.cool3c.com/article/223169')
+const inputLinks = ref("");
+const outputLinks = ref();
+const errorMsg = ref("");
+async function submitForm() {
+  console.log(inputLinks.value);
+  isLoading.value = !isLoading.value;
+  try {
+    if (!inputLinks.value.trim()) {
+      throw new Error("Input links cannot be empty.");
+    }
+    const count = await $fetch("/api/import", {
+      method: "POST",
+      body: {
+        urls: inputLinks.value.split("\n"),
+      },
+    });
+    outputLinks.value = count.result;
+    isLoading.value = !isLoading.value;
+    isSuccess.value = !isSuccess.value;
+    setTimeout(() => {
+      isSuccess.value = !isSuccess.value;
+    }, 1500);
+  } catch (error) {
+    isLoading.value = !isLoading.value;
+    errorMsg.value = error;
+  }
+}
 </script>
 <template>
-  <div class="flex flex-col h-full w-full py-6 items-end px-10">
-    {{ count }}
-    <div class="flex flex-row">
-      <!-- <p class="text-yellow-400">Receiving Links from LINE bot</p> -->
+  <div class="flex flex-col h-full w-full py-6 items-center px-10 gap-4">
+    <!-- <p class="text-lime-400">Listening for links from LINE bot</p> -->
+    <!-- <p class="text-yellow-400">Receiving Links from LINE bot</p> -->
 
-      <p class="text-lime-400">Listening for links from LINE bot</p> <v-btn
+    <v-container fluid>
+      <v-textarea
+        label="Links"
+        v-model="inputLinks"
+        name="input-7-1"
+        variant="filled"
+        auto-grow
+      ></v-textarea>
+    </v-container>
+
+    <v-btn
       prepend-icon="mdi-download"
-        :class="
-          isLoading
-            ? 'btn w-fit flex gap-4 btn-disabled'
-            : isSuccess
-            ? 'btn w-fit flex gap-4 btn-success'
-            : 'btn w-fit flex gap-4 btn-primary'
-        "
-        @click="submitForm"
-      >
-        
-          
-        <span
-          v-if="isLoading"
-          class="loading loading-spinner loading-sm"
-        ></span>
-        <span v-if="isLoading">Loading</span>
-        <span v-else-if="isSuccess">Success!</span>
-        <span v-else>Import Links</span>
-      </v-btn>
-    </div>
+      :class="
+        isLoading
+          ? 'btn w-fit flex gap-4 btn-disabled'
+          : isSuccess
+          ? 'btn w-fit flex gap-4 btn-success'
+          : 'btn w-fit flex gap-4 btn-primary'
+      "
+      :loading="isLoading"
+      @click="submitForm"
+    >
+      Import Links
+    </v-btn>
+    <span>
+      {{ errorMsg }}
+    </span>
 
-      <v-container fluid>
-        <v-textarea
-          label="Label"
-          model-value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-          name="input-7-1"
-          variant="filled"
-          auto-grow
-        ></v-textarea>
-      </v-container>
- 
-
+    <p v-for="i in outputLinks">{{ i.title }}</p>
     <div class="flex flex-row gap-2">
-      <span class="loading loading-spinner loading-sm text-yellow-400"></span
-      >
-      
-     
+      <span class="loading loading-spinner loading-sm text-yellow-400"></span>
     </div>
   </div>
 </template>
