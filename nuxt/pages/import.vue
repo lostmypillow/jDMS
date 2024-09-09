@@ -39,6 +39,7 @@ async function submitForm() {
         urls: inputLinks.value.split("\n"),
       },
     });
+    await syncData(0)
     outputLinks.value = count.result;
     isLoading.value = !isLoading.value;
     isSuccess.value = !isSuccess.value;

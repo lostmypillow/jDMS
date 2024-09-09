@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await sequelize.sync();
+  await sequelize.sync({force: true});
   console.log("sync all dbfff");
   const html = await getHTML((await readBody(event)).urls);
   const scraped = await scrapeContent(html);

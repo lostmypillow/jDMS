@@ -58,10 +58,10 @@ const Content = sequelize.define(
 );
 
 // Function to assign priority based on category
-const assignPriority = async (category) => {
-  const count = await Content.count({ where: { category } });
-  return count + 1;
-};
+// const assignPriority = async (category) => {
+//   const count = await Content.count({ where: { category } });
+//   return count + 1;
+// };
 
 
 // category: {

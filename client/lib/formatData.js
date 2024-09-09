@@ -12,8 +12,7 @@ export function formatAsHTML(inputText) {
 }
 function formatData(data) {
   const { title, date_source_author, link, content } = data;
-  let newcontent = content
-  return `${title}\n${date_source_author}\n${link}\n${newcontent}\n\n`;
+  return `${title}\n${date_source_author}\n${link}\n${content}\n\n`;
 }
 
 export function batchFormatData(listOfData) {

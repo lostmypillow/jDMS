@@ -5,13 +5,7 @@ export const store = reactive({
     data: [],
     isSaving: false,
     isSaveFailure: false,
+    allItems: [],
+    navItems: []
 })
 
-export async function updateStore(params) {
-    try {
-        
-    } catch (error) {
-        console.log(error)
-        isSaveFailure = true
-    }
-}

@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
     'vuetify-nuxt-module',
+    '@nuxt/fonts',
   ],
   
 })

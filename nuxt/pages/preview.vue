@@ -1,12 +1,13 @@
 <script setup>
-const navPlaces = [
-  "All",
-  "Qualcomm相關新聞",
-  "MediaTek相關新聞",
-  "無線通訊市場",
-  "智慧型手機/消費性電子產品",
-  "其他業界重要訊息",
-];
+import { store } from "~/store";
+// const navCategories = [
+//   "All",
+//   "Qualcomm相關新聞",
+//   "MediaTek相關新聞",
+//   "無線通訊市場",
+//   "智慧型手機/消費性電子產品",
+//   "其他業界重要訊息",
+// ];
 const trueItems = ref();
 
 function extractAttribute() {
@@ -14,14 +15,8 @@ function extractAttribute() {
   console.log(l);
 }
 
-async function getData(category) {
-  const response = await $fetch("/api/fetch/" + category);
-  trueItems.value = response;
-  return;
-}
-
 onMounted(async () => {
-  await getData(0);
+  await syncData(encodeURIComponent(tab));
 });
 
 function formatAsHTML(inputText) {
@@ -29,33 +24,28 @@ function formatAsHTML(inputText) {
   return inputText.replace(/\n\n/g, "<br><br>");
 }
 
-async function changeCat(item) {
-  const response = await $fetch("/api/edit", {
-    method: "POST",
-    body: {
-      id: item.id,
-      category: item.category,
-    },
-  });
-  console.log("updated car", item);
+async function handleEdit(item, tab) {
+  await sendEdit(item);
+  await syncData(encodeURIComponent(tab));
+  return;
 }
 </script>
 <template>
   <div class="w-full">
-    <button @click="extractAttribute">as</button>
+    <!-- <button @click="extractAttribute">as</button> -->
     <v-tabs
       v-model="tab"
-      @update:model-value="getData(encodeURIComponent(tab))"
+      @update:model-value="syncData(encodeURIComponent(tab))"
     >
-      <v-tab v-for="nav in navPlaces" :value="nav">{{ nav }}</v-tab>
+      <v-tab v-for="nav in navCategories" :value="nav">{{ nav }}</v-tab>
     </v-tabs>
 
     <v-tabs-window v-model="tab" class="px-6 py-6">
-      <v-tabs-window-item v-for="nav in navPlaces" :value="nav">
+      <v-tabs-window-item v-for="nav in navCategories" :value="nav">
         <v-card
           variant="tonal"
           class="px-4 py-4 mt-4"
-          v-for="item in trueItems"
+          v-for="item in store.allItems"
           :title="item.title"
           :subtitle="item.date_source_author"
         >
@@ -70,10 +60,10 @@ async function changeCat(item) {
             ]"
             v-model="item.category"
             variant="underlined"
-            @update:model-value="changeCat(item)"
+            @update:model-value="handleEdit(item, tab)"
           ></v-select>
           {{ item.id }}
-          {{ item.priority }}
+          Priority{{ item.priority }}
           <p v-html="formatAsHTML(item.content)"></p>
           <v-card-actions>
             <v-btn
