@@ -26,7 +26,11 @@ import { store } from "~/store";
         to="/import"
         title="Import"
       ></v-list-item>
- 
+      <v-list-item
+        prepend-icon="mdi-eye"
+        to="/edit"
+        title="Edit"
+      ></v-list-item>
       <v-list-item
         prepend-icon="mdi-eye"
         to="/preview"
