@@ -46,32 +46,7 @@ onMounted(() => {
       ></v-list-item>
       <v-divider></v-divider>
 
-      <v-list v-for="nav in navCategories">
-        <v-list-subheader>{{ nav }}</v-list-subheader>
-        <v-list-item
-          v-for="item in store.navItems.filter((x) => x.category == nav)"
-          :title="item.title"
-          :subtitle="item.date_source_author"
-        >
-          <template v-slot:prepend
-            ><v-btn
-              v-if="item.priority != 1"
-              size="x-small"
-              icon="mdi-arrow-up"
-            ></v-btn
-          ></template>
-          <template v-slot:append
-            ><v-btn
-              v-if="
-                item.priority !=
-                store.navItems.filter((x) => x.category == nav).length
-              "
-              size="x-small"
-              icon="mdi-arrow-down"
-            ></v-btn
-          ></template>
-        </v-list-item>
-      </v-list>
+
     </v-navigation-drawer>
     <v-main height="100vh" class="flex items-start justify-center">
       <slot />

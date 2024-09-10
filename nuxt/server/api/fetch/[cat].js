@@ -5,5 +5,6 @@ export default defineEventHandler(async (event) => {
     ? await Content.findAll()
     : await Content.findAll({
         where: { category: decodeURIComponent(category) },
+        order: [["priority", "ASC"]]
       });
 });

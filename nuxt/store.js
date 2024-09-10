@@ -6,6 +6,11 @@ export const store = reactive({
     isSaving: false,
     isSaveFailure: false,
     allItems: [],
-    navItems: []
+    navItems: [],
+    qualcomm: [],
+    mediatek: [],
+    commu: [],
+    phone: [],
+    other: []
 })
 
