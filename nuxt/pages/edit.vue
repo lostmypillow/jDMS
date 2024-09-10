@@ -18,9 +18,9 @@ import { store } from '~/store';
          {{nav}}
       </v-card>
     </div> -->
-<div class="flex flex-row w-full pt-8 h-full clas
+<div class="flex flex-row w-full pt-8 h-full items-center
 ">
-    <v-list v-for="nav in navCategories">
+    <v-list class="w-full" v-for="nav in navCategories">
         <v-list-subheader>{{ nav }}</v-list-subheader>
         <v-list-item
           v-for="item in store.navItems.filter((x) => x.category == nav)"
