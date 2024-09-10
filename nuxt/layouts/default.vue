@@ -1,6 +1,9 @@
 <script setup>
 const route = useRoute();
 import { store } from "~/store";
+onMounted(() => {
+  
+})
 </script>
 <template>
   <v-layout class="rounded rounded-md">

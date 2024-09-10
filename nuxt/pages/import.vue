@@ -43,6 +43,7 @@ async function submitForm() {
     outputLinks.value = count.result;
     isLoading.value = !isLoading.value;
     isSuccess.value = !isSuccess.value;
+  
     setTimeout(() => {
       isSuccess.value = !isSuccess.value;
     }, 1500);
