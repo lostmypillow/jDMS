@@ -8,5 +8,10 @@ export default defineNuxtConfig({
     'vuetify-nuxt-module',
     '@nuxt/fonts',
   ],
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
+    },
+  }
   
 })

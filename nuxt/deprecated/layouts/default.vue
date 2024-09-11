@@ -169,6 +169,32 @@ const isShowing = ref(false);
           </v-card>
         </v-tabs-window-item>
       </v-tabs-window>
+
+      <!-- <v-navigation-drawer class="flex">
+      <v-list-item title="JDMS" subtitle="subtitle"></v-list-item>
+      <v-divider></v-divider>
+      <v-list-item prepend-icon="mdi-home" to="/" title="Home"></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-eye"
+        to="/edit"
+        title="Edit"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-eye"
+        to="/preview"
+        title="Preview"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-export"
+        to="/export"
+        title="Export"
+      ></v-list-item>
+      <v-divider></v-divider>
+
+
+    </v-navigation-drawer> -->
+
+      <slot />
     </v-main>
   </v-layout>
 </template>

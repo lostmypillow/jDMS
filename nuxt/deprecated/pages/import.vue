@@ -1,28 +1,7 @@
 <script setup>
-// import { ref } from "vue";
-// const links = ref();
-// import { store } from "../store";
-// import { importToDb } from "../../lib/importToDb";
 const isStandby = ref(true);
 const isLoading = ref(false);
 const isSuccess = ref(false);
-// async function submitForm() {
-//   isStandby.value = false;
-//   isLoading.value = true;
-//   try {
-//     await importToDb(links?.value.trim().split("\n"));
-//     isLoading.value = false;
-//     isSuccess.value = true;
-//     setTimeout(() => {
-//       isSuccess.value = !isSuccess.value;
-//     }, 1500);
-//     isStandby.value = true;
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-// }
-
-// const {data: count} = await useFetch('https://www.cool3c.com/article/223169')
 const inputLinks = ref("");
 const outputLinks = ref();
 const errorMsg = ref("");
@@ -86,7 +65,23 @@ async function submitForm() {
       {{ errorMsg }}
     </span>
 
-    <p v-for="i in outputLinks">{{ i.title }}</p>
+    <div class="w-full" v-for="i in outputLinks">
+
+      <h2>{{ i.title }}</h2>
+     
+      <p>
+        {{ i.date_source_author }}
+      </p>
+
+      <a :href="i.url">
+        {{ i.url }}
+      </a>
+
+    
+
+      <p v-html="formatAsHTML(i.content)"></p>
+
+    </div>
     <div class="flex flex-row gap-2">
       <span class="loading loading-spinner loading-sm text-yellow-400"></span>
     </div>
