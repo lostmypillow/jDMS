@@ -24,6 +24,13 @@ async function handleEdit(item, tab) {
   return;
 }
 const tab = ref(null);
+const isStandby = ref(true);
+const isLoading = ref(false);
+const isSuccess = ref(false);
+const inputLinks = ref("");
+const outputLinks = ref();
+const errorMsg = ref("");
+
 const dialog = ref(false);
 async function submitForm() {
   console.log(inputLinks.value);
@@ -58,13 +65,11 @@ const isShowing = ref(false);
   <v-layout class="rounded rounded-md">
     <v-main height="100vh" class="flex flex-col items-start justify-start">
       <v-toolbar color="primary">
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+        <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
         <v-toolbar-title>JDMS</v-toolbar-title>
 
         <v-spacer></v-spacer>
-
-        <v-btn icon="mdi-magnify"></v-btn>
 
         <v-dialog v-model="dialog" max-width="400" persistent>
           <template v-slot:activator="{ props: activatorProps }">
@@ -108,6 +113,10 @@ const isShowing = ref(false);
             </template>
           </v-card>
         </v-dialog>
+        <v-btn @click="exportDocx">
+          Export
+        </v-btn>
+
         <template v-slot:extension>
           <v-tabs
             v-model="tab"

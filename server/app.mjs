@@ -124,25 +124,14 @@ app.get("/docx", async (req, res) => {
     "binary"
   );
 
-  // Unzip the content of the file
   const zip = new PizZip(content);
 
-  // This will parse the template, and will throw an error if the template is
-  // invalid, for example, if the template is "{user" (no closing tag)
   const doc = new Docxtemplater(zip, {
     paragraphLoop: true,
     linebreaks: true,
   });
 
-  // const mediatekTOCs = [];
-  // const commuTOCs = [];
-  // const phoneTOCs = [];
-  // const otherTOCs = [];
-  // // const qualcommList = [];
 
-  // const mediatekList = [];
-  // const commuList = [];
-  // const phoneList = [];
   /**
    * Fetches and processes data from a Sequelize model.
    * @param {Model} model - The Sequelize model to query.
@@ -155,7 +144,7 @@ app.get("/docx", async (req, res) => {
       order: [["priority", "ASC"]],
     });
     console.log(data);
-    // Process the data to structure the content
+
     const processedData =
       data.length > 0
         ? data.map((item) => {
@@ -166,7 +155,6 @@ app.get("/docx", async (req, res) => {
           })
         : data;
 
-    // Generate Table of Contents (TOCs)
     const toc =
       data.length > 0
         ? data.map((obj) => obj["title"]).map((item) => ({ headline: item }))
@@ -175,7 +163,7 @@ app.get("/docx", async (req, res) => {
     return { processedData, toc };
   }
 
-  // Example usage with QualcommNews model
+
   const { processedData: qualcommList, toc: qualcommTOCs } =
     await fetchDataAndProcess(QualcommNews);
   const { processedData: mediatekList, toc: mediatekTOCs } =
@@ -200,19 +188,12 @@ app.get("/docx", async (req, res) => {
     otherList: otherList,
   };
 
-  // const transformedData = {
-  //   ...data, // Spread the existing data
-  //   items: data.qualcommTOCs.map(item => ({ headline: item })) // Transform text items into objects
-  // };
-
-  // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
   doc.render(data);
 
   // Get the zip document and generate it as a nodebuffer
   const buf = doc.getZip().generate({
     type: "nodebuffer",
-    // compression: DEFLATE adds a compression step.
-    // For a 50MB output document, expect 500ms additional CPU time
+
     compression: "DEFLATE",
   });
 

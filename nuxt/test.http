@@ -3,4 +3,4 @@ content-type: application/json
 
 { "urls": ["https://www.cool3c.com/article/222688", "https://www.cool3c.com/article/222688", "https://www.cool3c.com/article/222688"] }
 ###
-GET http://localhost:3000/api/fetch/0 HTTP/1.1
+GET http://localhost:3000/api/export HTTP/1.1
