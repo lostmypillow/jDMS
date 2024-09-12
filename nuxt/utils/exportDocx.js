@@ -10,6 +10,7 @@ export default async function () {
       paragraphLoop: true,
       linebreaks: true,
     });
+    
     // const data = {
     //     date: new Date().toISOString().split("T")[0],
     //     qualcommTOCs: qualcommTOCs,

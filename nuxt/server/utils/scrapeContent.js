@@ -3,22 +3,30 @@
 import * as cheerio from "cheerio";
 
 function appendCat(title) {
+  let category;
   switch (true) {
     case title.includes("高通"):
-      return "Qualcomm相關新聞";
+      category = "Qualcomm相關新聞";
+      break;
 
     case title.includes("聯發科"):
-      return "MediaTek相關新聞";
+      category = "MediaTek相關新聞";
+      break;
 
     case title.includes("5G"):
-      return "無線通訊市場";
+      category = "無線通訊市場";
+      break;
 
-    case title.includes("OPPO") || title.includes("PC"):
-      return "智慧型手機/消費性電子產品";
+    case title.includes("三星") || title.includes("PC"):
+      category = "智慧型手機/消費性電子產品";
+      break;
 
     default:
-      return "其他業界重要訊息";
+      category = "其他業界重要訊息";
+      break;
+
   }
+  return category
 }
 let resultList = [];
 

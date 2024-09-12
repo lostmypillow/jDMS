@@ -13,8 +13,8 @@ export default defineEventHandler(async (event) => {
     "https://www.digitimes.com.tw/tech/dt/n/shwnws.asp?CnlID=9&id=0000701983_AF7LNNKD7NE8O14PF96VB&wpidx=5"
     
     ]
-  // const html = await getHTML((await readBody(event)).urls);
-  const html = await getHTML(mockdata);
+  const html = await getHTML((await readBody(event)).urls);
+  // const html = await getHTML(mockdata);
   const scraped = await scrapeContent(html);
   // const scraped = await scrapeContent(await (await readBody(event)).urls);
   // console.log(resultList)

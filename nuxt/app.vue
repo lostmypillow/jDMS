@@ -136,7 +136,25 @@ const isShowing = ref(false);
             :title="`${item.priority}. ${item.title}`"
             :subtitle="item.date_source_author"
           >
-            <v-select
+
+           
+            <!-- <p>ID: {{ item.id }}</p> -->
+
+            <!-- <p v-html="formatAsHTML(item.content)"></p> -->
+
+
+            <v-container fluid>
+              <v-textarea
+                label="Content"
+                v-model="item.content"
+                name="input-7-1"
+                variant="filled"
+                auto-grow
+              ></v-textarea>
+            </v-container>
+
+            <v-card-actions>
+              <v-select
               class="w-fit"
               label="Category"
               :items="[
@@ -150,10 +168,6 @@ const isShowing = ref(false);
               variant="underlined"
               @update:model-value="handleEdit(item, tab)"
             ></v-select>
-            <p>ID: {{ item.id }}</p>
-
-            <p v-html="formatAsHTML(item.content)"></p>
-            <v-card-actions>
               <v-btn v-if="item.priority != 1" prepend-icon="mdi-arrow-up">
                 Move Up</v-btn
               >
@@ -183,7 +197,8 @@ const isShowing = ref(false);
 </template>
 <style>
 :root {
-  font-family: "Noto Sans TC";
+  font-family: "SF Pro Text", "Noto Sans TC";
+  font-smooth: auto;
 }
 html {
   overflow-y: auto;
