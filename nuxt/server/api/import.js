@@ -15,21 +15,21 @@ export default defineEventHandler(async (event) => {
     ]
   const html = await getHTML((await readBody(event)).urls);
   // const html = await getHTML(mockdata);
-  const scraped = await scrapeContent(html);
+  // const scraped = await scrapeContent(html);
   // const scraped = await scrapeContent(await (await readBody(event)).urls);
   // console.log(resultList)
-  console.log("ready to create");
-  for (const item of scraped) {
-    try {
-      const [content, created] = await Content.findOrCreate({
-        where: { url: item.url },
-        defaults: item,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // console.log("ready to create");
+  // for (const item of scraped) {
+  //   try {
+  //     const [content, created] = await Content.findOrCreate({
+  //       where: { url: item.url },
+  //       defaults: item,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  const result = await Content.findAll();
-  return { result };
+  // const result = await Content.findAll();
+  return { html:html };
 });
