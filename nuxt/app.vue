@@ -60,6 +60,13 @@ async function submitForm() {
   }
 }
 const isShowing = ref(false);
+const currentID = ref("");
+const currentItem = ref();
+const selectedItems = ref();
+
+async function getByPk(uuid) {
+  currentItem.value = await $fetch("/api/fetchone/" + uuid);
+}
 </script>
 <template>
   <v-layout class="rounded rounded-md">
@@ -113,9 +120,7 @@ const isShowing = ref(false);
             </template>
           </v-card>
         </v-dialog>
-        <v-btn @click="exportDocx">
-          Export
-        </v-btn>
+        <v-btn @click="exportDocx"> Export </v-btn>
 
         <template v-slot:extension>
           <v-tabs
@@ -129,67 +134,127 @@ const isShowing = ref(false);
 
       <v-tabs-window v-model="tab" class="px-6 py-6 overflow-auto w-full">
         <v-tabs-window-item v-for="nav in navCategories" :value="nav">
-          <v-card
-            variant="tonal"
-            class="px-4 py-4 mt-4"
-            v-for="item in store.allItems"
-            :title="`${item.priority}. ${item.title}`"
-            :subtitle="item.date_source_author"
-          >
 
-           
-            <!-- <p>ID: {{ item.id }}</p> -->
+          <div class="flex flex-row">
+            <div class="flex-none w-1/5 mr-4">
+              <v-list lines="one" variant="tonal">
+                <!--  @click="
+                    currentItem = store.navItems.find(
+                      (element) => (element.id = n.id)
+                    )
+                  " -->
+         
+                <v-list-item
+                  v-for="n in store.navItems.filter((x) => (x.category = nav))"
+                  :value="n.id"
+                  :key="n.id"
+                  :title="n.title"
+                  :subtitle="n.date_source_author"
+                  @click="getByPk(n.id)"
+                >
+                <v-btn
+                    v-if="n.priority != 1"
+                    prepend-icon="mdi-arrow-up"
+                  >
+                    Move Up</v-btn
+                  >
+                  <v-btn
+                    v-if="
+                      n.priority !=
+                      store.navItems.filter(
+                        (x) => x.category == n.category
+                      ).length
+                    "
+                    prepend-icon="mdi-arrow-down"
+                    >Move Down
+                  </v-btn>
+              </v-list-item>
+              </v-list>
+            </div>
 
-            <!-- <p v-html="formatAsHTML(item.content)"></p> -->
-
-
-            <v-container fluid>
-              <v-textarea
-                label="Content"
-                v-model="item.content"
-                name="input-7-1"
-                variant="filled"
-                auto-grow
-              ></v-textarea>
-            </v-container>
-
-            <v-card-actions>
-              <v-select
-              class="w-fit"
-              label="Category"
-              :items="[
-                'Qualcomm相關新聞',
-                'MediaTek相關新聞',
-                '無線通訊市場',
-                '智慧型手機/消費性電子產品',
-                '其他業界重要訊息',
-              ]"
-              v-model="item.category"
-              variant="underlined"
-              @update:model-value="handleEdit(item, tab)"
-            ></v-select>
-              <v-btn v-if="item.priority != 1" prepend-icon="mdi-arrow-up">
-                Move Up</v-btn
-              >
-              <v-btn
-                v-if="
-                  item.priority !=
-                  store.navItems.filter((x) => x.category == item.category)
-                    .length
-                "
-                prepend-icon="mdi-arrow-down"
-                >Move Down
-              </v-btn>
-              <v-btn
+            <div class="flex grow">
+              <v-card
+                v-if="currentItem"
                 variant="tonal"
-                a
-                :href="item.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Link</v-btn
+                class="px-4 py-4 mt-4 w-full"
               >
-            </v-card-actions>
-          </v-card>
+                <p class="p-4 text-xl font-bold">
+                  News Content No.{{ currentItem.priority }}
+                </p>
+                {{ currentItem.id }}
+
+
+                <div class="flex flex-row">
+                   <v-text-field
+                  class="px-4"
+                  v-model="currentItem.title"
+                  label="Title"
+                ></v-text-field>
+                <v-text-field
+                  class="px-4"
+                  v-model="currentItem.date_source_author"
+                  label="Date / Source / Author"
+                ></v-text-field>
+                <v-select
+                    class="w-fit pl-4"
+                    label="Category"
+                    :items="[
+                      'Qualcomm相關新聞',
+                      'MediaTek相關新聞',
+                      '無線通訊市場',
+                      '智慧型手機/消費性電子產品',
+                      '其他業界重要訊息',
+                    ]"
+                    v-model="currentItem.category"
+                    variant="underlined"
+                    @update:model-value="handleEdit(item, tab)"
+                  ></v-select>
+                </div>
+               
+                <!-- <p>ID: {{ item.id }}</p> -->
+
+                <!-- <p v-html="formatAsHTML(item.content)"></p> -->
+
+                <v-container fluid>
+                  <v-textarea
+                    label="Content"
+                    v-model="currentItem.content"
+                    name="input-7-1"
+                    variant="filled"
+                    auto-grow
+                  ></v-textarea>
+                </v-container>
+
+                <v-card-actions>
+                 
+                  <v-btn
+                    v-if="currentItem.priority != 1"
+                    prepend-icon="mdi-arrow-up"
+                  >
+                    Move Up</v-btn
+                  >
+                  <v-btn
+                    v-if="
+                      currentItem.priority !=
+                      store.navItems.filter(
+                        (x) => x.category == currentItem.category
+                      ).length
+                    "
+                    prepend-icon="mdi-arrow-down"
+                    >Move Down
+                  </v-btn>
+                  <v-btn
+                    variant="tonal"
+                    a
+                    :href="currentItem.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Link</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </div>
+          </div>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>

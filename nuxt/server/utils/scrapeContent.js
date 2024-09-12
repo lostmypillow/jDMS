@@ -1,55 +1,18 @@
-
-
 import * as cheerio from "cheerio";
 
-function appendCat(title) {
-  let category;
-  switch (true) {
-    case title.includes("高通"):
-      category = "Qualcomm相關新聞";
-      break;
-
-    case title.includes("聯發科"):
-      category = "MediaTek相關新聞";
-      break;
-
-    case title.includes("5G"):
-      category = "無線通訊市場";
-      break;
-
-    case title.includes("三星") || title.includes("PC"):
-      category = "智慧型手機/消費性電子產品";
-      break;
-
-    default:
-      category = "其他業界重要訊息";
-      break;
-
-  }
-  return category
-}
 let resultList = [];
 
 async function scrapeWithCheerio(url, html) {
-  var title = "";
-  var date_source_author = "";
+  var title = getTitle(html);
+  var date_source_author = getDSA(html);
   var content = [];
-  let dateParts;
-  var category = "";
-  let link = url
-  const $ = cheerio.load(html);
-
+  var category = assignCategory(title);
+  let $ = cheerio.load(html);
   switch (true) {
     ///////ctee  、綜合外電
     // https://www.ctee.com.tw/news/20240821700211-439901
     // https://www.ctee.com.tw/news/20240821701357-430704
     case link.includes("ctee"):
-      title = $("h1.main-title").text().trim();
-      date_source_author = `${$("li.publish-date time")
-        .text()
-        .replace(/\./g, "-")} / 工商時報 / ${$("span.name").text().trim()}`;
-      content = [];
-      // content?.push($('blockquote p').text())
       $("article p").each((i, element) => {
         const text = $(element).text().trim();
         if (text) {
@@ -61,12 +24,7 @@ async function scrapeWithCheerio(url, html) {
 
     ////// ePrice bug related links css comments
     case link.includes("eprice"):
-      title = $("h1.title").text().trim();
-      // const entry = $("span.date")
-      //   .text()
-      //   .match(/\d{4}-\d{2}-\d{2}/)[0];
-      const author = $("a.nickname").attr("title");
-      date_source_author = `/ ePrice / ${author}`;
+ 
       content = $("div.user-comment-block")
         .text()
         .split("來源：")[0]
@@ -90,7 +48,7 @@ async function scrapeWithCheerio(url, html) {
         }
       });
       content = allContent;
-      title = $("li.breadcrumb-item.active").text().trim().replace("\n", "");
+
       date_source_author = `${$("div.created.slacken span")
         .eq(1)
         .text()
@@ -102,7 +60,6 @@ async function scrapeWithCheerio(url, html) {
 
     ////// mashdigi
     case link.includes("mashdigi"):
-      title = $("h1.entry-title").text().trim();
 
       date_source_author = `${$(
         '[href="' + link + '"] > time.entry-date.published'
@@ -133,7 +90,7 @@ async function scrapeWithCheerio(url, html) {
 
     //////sogi FIX
     case link.includes("sogi"):
-      title = $("h1.h1").text().trim();
+ 
 
       date_source_author = `${$("div.d-inline-block.mr-3")
         .first()
@@ -146,34 +103,14 @@ async function scrapeWithCheerio(url, html) {
         .eq(1)
         .text()
         .trim()}`;
-      // content = $("div.editable.my-2")
-      //         .html()
-      content = [];
-      //       let textArray = [];
+    
+  
 
-      //
-      //         .split(/<br\s*\/?>/i)
-      //         .forEach((part) => {
-      //           textArray.push($(part).text().trim());
-      //         });
-
-      // textArray = textArray.filter(
-      //   (text) =>
-      //     text.length > 0 &&
-      //     !text.startsWith("googletag") &&
-      //     !text.startsWith("▲") &&
-      //     !text.startsWith("訂閱手機王，快速掌握") &&
-      //     !text.startsWith("現在，你也可以同步追蹤") &&
-      //     !text.includes("訂閱追蹤") &&
-      //     !text.includes("手機王網友")
-      // );
-      // content = textArray;
       break;
     //////
 
     //////buzzorange
     case link.includes("buzzorange"):
-      title = $("h1.elementor-heading-title.elementor-size-default").text();
 
       date_source_author =
         $("time").text() +
@@ -195,13 +132,13 @@ async function scrapeWithCheerio(url, html) {
         }
       });
       content = newarray;
-    
+
       break;
     ///////
 
     //////money udn jquery fragments
     case link.includes("money.udn"):
-      title = $("h1#story_art_title").text();
+
       const text = $("div.article-body__info span").text();
       const match = text.match(/記者(.*?)／/);
       const result = match ? match[1] : "";
@@ -221,7 +158,6 @@ async function scrapeWithCheerio(url, html) {
 
     /////udn
     case link.includes("udn"):
-      title = $("h1.article-content__title").text();
       const udntext = $("div.article-body__info span").text();
       const udnmatch = udntext.match(/記者(.*?)／/);
       const udnresult = udnmatch ? udnmatch[1] : "";
@@ -244,7 +180,6 @@ async function scrapeWithCheerio(url, html) {
 
     ////digitimes
     case link.includes("digitimes"):
-      title = $("h1.news-title").text();
       date_source_author =
         $("time").text() + " / 電子時報 / " + $("font").first().text();
       content = [];
@@ -254,7 +189,6 @@ async function scrapeWithCheerio(url, html) {
     /////chinatimes bug time wrong
     // https://www.chinatimes.com/realtimenews/20240820002976-260412?chdtv
     case link.includes("chinatimes"):
-      title = $("h1.article-title").text();
       date_source_author =
         $("span.date").first().text() +
         " / " +
@@ -272,13 +206,12 @@ async function scrapeWithCheerio(url, html) {
     //////
 
     case link.includes("ctimes"):
-      title = "";
+  
       date_source_author = "";
       break;
 
     ///////kocpc
     case link.includes("kocpc"):
-      title = $("h1.jeg_post_title").text();
       date_source_author =
         $('a[href="' + link + '"]')
           .text()
@@ -307,7 +240,6 @@ async function scrapeWithCheerio(url, html) {
 
     /////3c ltn extra headline
     case link.includes("3c.ltn"):
-      title = $("div.whitecon.borderline.boxTitle.boxText h1").text();
       date_source_author =
         $("span.time").text().split(" ").slice(0)[0].replace(/\//g, "-") +
         " / 自由時報 / " +
@@ -336,7 +268,7 @@ async function scrapeWithCheerio(url, html) {
 
     /////ec ltn author prob
     case link.includes("ec.ltn"):
-      title = $("div.whitecon.boxTitle.boxText h1").text();
+ 
       date_source_author =
         $("span.time").text().split(" ").slice(0)[0].replace(/\//g, "-") +
         " / 自由時報 / " +
@@ -377,7 +309,7 @@ async function scrapeWithCheerio(url, html) {
             return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
           }
         );
-      title = $("span#thread_subject").text();
+     
       date_source_author =
         formattedDate +
         " / XFastest / " +
@@ -413,7 +345,7 @@ async function scrapeWithCheerio(url, html) {
     case link.includes("investor"):
       break;
     case link.includes("taisounds"):
-      title = $("div.news-box h1").text();
+  
       date_source_author = "" + $("a[href^='/more/reporternews']").text();
       content = [];
 
@@ -425,14 +357,12 @@ async function scrapeWithCheerio(url, html) {
       //   element.trim()
       // })
 
-
-
       break;
 
     //ctwant
     //technews
     case link.includes("technews"):
-      title = $("h1.entry-title").text();
+
       content = [];
       dateParts = $("span.body:nth-of-type(4)")
         .text()
@@ -451,7 +381,6 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////technbang bug!
     case link.includes("techbang"):
-      title = $("h1.post-title").text();
 
       dateParts =
         $("p.post-meta-info span:nth-of-type(3)")
@@ -475,18 +404,15 @@ async function scrapeWithCheerio(url, html) {
     //techudnc
     //2cm
   }
-  category = appendCat(title);
   content = content.join("\n\n");
 
   return { title, date_source_author, category, url, content };
 }
 
-
 export default async function (listOfLinkObjects) {
   for (const linkObject of listOfLinkObjects) {
     const data = await scrapeWithCheerio(linkObject.url, linkObject.html);
     resultList.push(data);
-    console.log(data)
   }
   return resultList;
 }
