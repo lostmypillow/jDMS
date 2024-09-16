@@ -2,54 +2,9 @@ import { chromium } from "playwright";
 import { launch as chromeLauncher } from "chrome-launcher";
 
 export default defineEventHandler(async (event) => {
-  // Specify the path to the locally installed Chrome
-  const chromePath = {
-    win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe ",
-    darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    linux: "/usr/bin/google-chrome",
-  }[process.platform];
-let html;
-  async function launchRealChrome(link) {
-    const browser = await chromium.launch({
-      executablePath: chromePath, // Use the real Chrome browser
-      headless: false, // Set to false for full browser mode
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-blink-features=AutomationControlled",
-        "--user-data-dir=%userprofile%\\AppData\\Local\\Google\\Chrome\\User Data" // Optional for bot detection evasion
-      ],
-    });
-
-    const context = await browser.newContext({
-      viewport: { width: 1280, height: 800 }, // Realistic viewport
-      userAgent:
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36", // Realistic user agent
-    });
-
-    const page = await context.newPage();
-
-    // Navigate to the website
-    await page.goto(link);
-
-    // Wait for some time to simulate reading the page
-    await page.waitForTimeout(Math.random() * 5000 + 2000);
-
-    // Get the HTML content of the page
-    const x = await page.content();
-
-    // Close the browser
-    await browser.close();
-    return x;
-  }
-const url = await (await readBody(event)).url
-
-if (await url.includes("ctee")) {
-  html = await launchRealChrome(url).catch((err) => console.error(err));
-} else  {
-  html = await $fetch(url)
-}
-const processedContent = await scrapeContent(url, html)
+  const url = await (await readBody(event)).url;
+  html = await $fetch(url);
+  const processedContent = await scrapeContent(url, html);
 
   // await sequelize.drop()
   // await sequelize.sync({force: true});
