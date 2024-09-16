@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-export default function (html) {
+export default function (link, html) {
   let title;
   let $ = cheerio.load(html);
   switch (true) {

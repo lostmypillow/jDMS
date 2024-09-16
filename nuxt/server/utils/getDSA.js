@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-export default function () {
+export default function (link, html) {
   let date_source_author;
   let dateParts;
   let $ = cheerio.load(html);

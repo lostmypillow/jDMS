@@ -2,12 +2,13 @@ import * as cheerio from "cheerio";
 
 let resultList = [];
 
-async function scrapeWithCheerio(url, html) {
-  var title = getTitle(html);
-  var date_source_author = getDSA(html);
+export default async function(url, html) {
+  var title = getTitle(url, html);
+  var date_source_author = getDSA(url, html);
   var content = [];
   var category = assignCategory(title);
   let $ = cheerio.load(html);
+  let link = url
   switch (true) {
     ///////ctee  、綜合外電
     // https://www.ctee.com.tw/news/20240821700211-439901
@@ -16,7 +17,7 @@ async function scrapeWithCheerio(url, html) {
       $("article p").each((i, element) => {
         const text = $(element).text().trim();
         if (text) {
-          content?.push(text);
+          content.push(text);
         }
       });
       break;
@@ -49,24 +50,12 @@ async function scrapeWithCheerio(url, html) {
       });
       content = allContent;
 
-      date_source_author = `${$("div.created.slacken span")
-        .eq(1)
-        .text()
-        .trim()
-        .split(" ")[0]
-        .replace(/\./g, "-")} / Cool3c / ${$("div.author a").text().trim()}`;
+     
       break;
     //////
 
     ////// mashdigi
     case link.includes("mashdigi"):
-
-      date_source_author = `${$(
-        '[href="' + link + '"] > time.entry-date.published'
-      ).text()} / Mashdigi / ${$("div.entry-meta span.author.vcard")
-        .text()
-        .replace(" (Mash Yang)", "")}`;
-      //////
 
       content = [];
 
@@ -92,18 +81,7 @@ async function scrapeWithCheerio(url, html) {
     case link.includes("sogi"):
  
 
-      date_source_author = `${$("div.d-inline-block.mr-3")
-        .first()
-        .text()
-        .replace("\n", "")
-        .trim()
-        .replace(/\//g, "-")} / 手機王 / ${$("div.d-inline-block.mr-3")
-        .eq(1)
-        .find("a")
-        .eq(1)
-        .text()
-        .trim()}`;
-    
+   
   
 
       break;
@@ -189,13 +167,6 @@ async function scrapeWithCheerio(url, html) {
     /////chinatimes bug time wrong
     // https://www.chinatimes.com/realtimenews/20240820002976-260412?chdtv
     case link.includes("chinatimes"):
-      date_source_author =
-        $("span.date").first().text() +
-        " / " +
-        $("div.source").text() +
-        " / " +
-        $("div.author").text();
-
       content = [];
       $("div.article-body p").each((index, element) => {
         if (!$(element).text().trim() == "") {
@@ -409,10 +380,10 @@ async function scrapeWithCheerio(url, html) {
   return { title, date_source_author, category, url, content };
 }
 
-export default async function (listOfLinkObjects) {
-  for (const linkObject of listOfLinkObjects) {
-    const data = await scrapeWithCheerio(linkObject.url, linkObject.html);
-    resultList.push(data);
-  }
-  return resultList;
-}
+// export default async function (listOfLinkObjects) {
+//   for (const linkObject of listOfLinkObjects) {
+//     const data = await scrapeWithCheerio(linkObject.url, linkObject.html);
+//     resultList.push(data);
+//   }
+//   return resultList;
+// }
