@@ -122,7 +122,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    //////sogi FIX
+    //////sogi REPLACED
     case link.includes("sogi"):
       title = $("h1.h1").text().trim();
 
@@ -162,13 +162,13 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    //////buzzorange
+    //////buzzorange REPLACED
     case link.includes("buzzorange"):
       title = $("h1.elementor-heading-title.elementor-size-default").text();
 
       date_source_author =
         $("time").text() +
-        " / BuzzOrange / " +
+        " / 科技報橘 / " +
         $(
           "span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-author"
         )
@@ -190,7 +190,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     ///////
 
-    //////money udn jquery fragments
+    //////money udn REPLACED
     case link.includes("money.udn"):
       title = $("h1#story_art_title").text();
       const text = $("div.article-body__info span").text();
@@ -210,15 +210,9 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    /////udn
+    /////udn REPLACED
     case link.includes("udn"):
       title = $("h1.article-content__title").text();
-
-      
-      const udntext = $("div.article-body__info span").text();
-      const udnmatch = udntext.match(/記者(.*?)／/);
-      const udnresult = udnmatch ? udnmatch[1] : "";
-
       date_source_author =
         $("time.article-content__time")
           .text()
@@ -235,7 +229,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     ///////
 
-    ////digitimes
+    ////digitimes REPLACED
     case link.includes("digitimes"):
       title = $("h1.news-title").text();
       date_source_author =
@@ -244,32 +238,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     /////
 
-    /////chinatimes bug time wrong
-    // https://www.chinatimes.com/realtimenews/20240820002976-260412?chdtv
-    case link.includes("chinatimes"):
-      title = $("h1.article-title").text();
-      date_source_author =
-        $("span.date").first().text() +
-        " / " +
-        $("div.source").text() +
-        " / " +
-        $("div.author").text();
-
-      content = [];
-      $("div.article-body p").each((index, element) => {
-        if (!$(element).text().trim() == "") {
-          content.push($(element).text().trim());
-        }
-      });
-      break;
-    //////
-
-    case link.includes("ctimes"):
-      title = "";
-      date_source_author = "";
-      break;
-
-    ///////kocpc
+ ///////kocpc REPLACED
     case link.includes("kocpc"):
       title = $("h1.jeg_post_title").text();
       date_source_author =
@@ -298,7 +267,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    /////3c ltn extra headline
+  /////3c ltn REPLACED
     case link.includes("3c.ltn"):
       title = $("div.whitecon.borderline.boxTitle.boxText h1").text();
       date_source_author =
@@ -327,7 +296,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    /////ec ltn author prob
+    /////ec ltn REPLACED
     case link.includes("ec.ltn"):
       title = $("div.whitecon.boxTitle.boxText h1").text();
       date_source_author =
@@ -359,7 +328,33 @@ async function scrapeWithCheerio(url, html) {
       break;
     /////
 
-    //////XFastest
+    /////chinatimes bug time wrong
+    // https://www.chinatimes.com/realtimenews/20240820002976-260412?chdtv
+    case link.includes("chinatimes"):
+      title = $("h1.article-title").text();
+      date_source_author =
+        $("span.date").first().text() +
+        " / " +
+        $("div.source").text() +
+        " / " +
+        $("div.author").text();
+
+      content = [];
+      $("div.article-body p").each((index, element) => {
+        if (!$(element).text().trim() == "") {
+          content.push($(element).text().trim());
+        }
+      });
+      break;
+    //////
+
+
+
+   
+
+  
+
+    //////XFastest REPLACED
     case link.includes("xfastest"):
       const formattedDate = $('span[title^="202"]')
         .attr("title")
@@ -397,14 +392,8 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    case link.includes("cnyes"):
-      break;
 
-    case link.includes("moneydj"):
-      break;
-
-    case link.includes("investor"):
-      break;
+    ////taisounds REPLACED
     case link.includes("taisounds"):
       title = $("div.news-box h1").text();
       date_source_author = "" + $("a[href^='/more/reporternews']").text();
@@ -422,8 +411,8 @@ async function scrapeWithCheerio(url, html) {
 
       break;
 
-    //ctwant
-    //technews
+
+    //technews REPLACED
     case link.includes("technews"):
       title = $("h1.entry-title").text();
       content = [];
@@ -454,19 +443,11 @@ async function scrapeWithCheerio(url, html) {
       // .match(/(\d{4}) 年 (\d{2}) 月 (\d{2}) 日/);
       date_source_author =
         `${dateParts[1]}-${dateParts[2]}-${dateParts[3]}` +
-        "T客邦" +
+        " / T客邦 / " +
         $("a.nickname").text();
       content = [];
       break;
-    //nextapple
-    //cna
-    //setn
-    //bnext
-    //saydigi
-    //inside
-    //lpcomment
-    //techudnc
-    //2cm
+   
   }
   category = appendCat(title);
   content = content.join("\n\n");
