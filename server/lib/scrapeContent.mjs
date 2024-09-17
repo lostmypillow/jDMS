@@ -50,7 +50,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    ////// ePrice bug related links css comments
+    ////// ePrice REPLACED
     case link.includes("eprice"):
       title = $("h1.title").text().trim();
       // const entry = $("span.date")
@@ -68,7 +68,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    ////// cool3c iframe
+    ////// cool3c REPLACED
     case link.includes("cool3c"):
       const allContent = [];
 
@@ -91,7 +91,7 @@ async function scrapeWithCheerio(url, html) {
       break;
     //////
 
-    ////// mashdigi
+    ////// mashdigi REPLACED
     case link.includes("mashdigi"):
       title = $("h1.entry-title").text().trim();
 
@@ -213,6 +213,8 @@ async function scrapeWithCheerio(url, html) {
     /////udn
     case link.includes("udn"):
       title = $("h1.article-content__title").text();
+
+      
       const udntext = $("div.article-body__info span").text();
       const udnmatch = udntext.match(/記者(.*?)／/);
       const udnresult = udnmatch ? udnmatch[1] : "";
