@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'vuetify-nuxt-module',
     '@nuxt/fonts',
+    '@pinia/nuxt'
   ],
   fonts: {
     experimental: {

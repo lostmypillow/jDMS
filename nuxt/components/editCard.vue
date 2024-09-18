@@ -1,59 +1,97 @@
 <script setup>
-const props = defineProps(["category", "items", "toggle"]);
-import { store } from "~/store";
-async function moveUp(item) {
-  const response = await $fetch("/api/order", {
-    method: "POST",
-    body: { element: item, direction: "up" },
-  });
-  await syncData(0);
-  return;
-}
-async function moveDown(item) {
-  const response = await $fetch("/api/order", {
-    method: "POST",
-    body: { element: item, direction: "down" },
-  });
-  console.log("before sync")
-  await syncData(0);
-  console.log("after sync")
-  return;
-}
+const props = defineProps(["item"]);
+const list = [
+  "Qualcomm相關新聞",
+  "MediaTek相關新聞",
+  "無線通訊市場",
+  "智慧型手機/消費性電子產品",
+  "其他業界重要訊息",
+];
 </script>
+
 <template>
-  <v-list class="w-full">
-    <v-list-subheader class="flex items-center justify-center">
-      {{ props.category }}
-    </v-list-subheader>
+  <div class="flex w-full h-fit">
+    <v-card v-if="props.item" variant="tonal" class="px-4 w-full">
+      <p class="p-4 text-xs">
+        News Content No.{{ props.item.priority }}; ID No.
+        {{ props.item.id }}
+      </p>
 
-    <v-list-item
-      class="border-2 border-red-600"
-      v-for="item in props.items"
-      :title="item.title"
-      :subtitle="item.date_source_author"
-    >
-      <template v-slot:prepend>
-        <v-btn
-          v-if="item.priority != 1 && props.toggle == 'order'"
-          size="x-small"
-          icon="mdi-arrow-up"
-          @click="moveUp(item)"
-        ></v-btn>
-      </template>
+      <v-text-field
+        class="px-4"
+        v-model="props.item.title"
+        label="Title"
+      ></v-text-field>
+      <div class="flex flex-row">
+        <v-text-field
+          class="px-4"
+          v-model="props.item.date_source_author"
+          label="Date / Source / Author"
+        ></v-text-field>
+        <!-- <v-select
+                    class="w-fit pl-4"
+                    label="Category"
+                    :items="[
+                      'Qualcomm相關新聞',
+                      'MediaTek相關新聞',
+                      '無線通訊市場',
+                      '智慧型手機/消費性電子產品',
+                      '其他業界重要訊息',
+                    ]"
+                    v-model="props.item.category"
+                    variant="underlined"
+                    @update:model-value="handleEdit(item, tab)"
+                  ></v-select> -->
+      </div>
+      <v-btn-toggle
+        :items="list"
+        v-model="props.item.category"
+        color="primary"
+        mandatory
+        class="w-full mb-4 ml-4"
+      >
+        <v-btn v-for="i in list" :value="i">{{ i }}</v-btn>
+      </v-btn-toggle>
 
-      <template v-slot:append>
-        <v-btn
-          v-if="
-            item.priority !=
-              store.navItems.filter((x) => x.category == nav).length &&
-            props.toggle == 'order'
-          "
-          size="x-small"
-          icon="mdi-arrow-down"
-          @click="moveDown(item)"
+      <div class="px-4">
+        <v-text-field v-model="props.item.url" label="URL">
+          <template v-slot:append-inner>
+            <v-btn
+              a
+              variant="tonal"
+              :href="props.item.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="lowercase underline text-blue-400"
+              >Open link</v-btn
+            >
+          </template></v-text-field
         >
-        </v-btn>
-      </template>
-    </v-list-item>
-  </v-list>
+      </div>
+      <!-- <p>ID: {{ item.id }}</p> -->
+
+      <!-- <p v-html="formatAsHTML(item.content)"></p> -->
+
+      <v-container fluid>
+        <v-textarea
+          label="Content"
+          v-model="props.item.content"
+          name="input-7-1"
+          variant="filled"
+          auto-grow
+        ></v-textarea>
+      </v-container>
+
+      <v-card-actions>
+        <v-btn
+          variant="tonal"
+          a
+          :href="props.item.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Link</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>

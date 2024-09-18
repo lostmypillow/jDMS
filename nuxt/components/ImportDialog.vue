@@ -2,6 +2,7 @@
 const isLoading = ref(false);
 const inputLinks = ref("");
 const dialog = ref(false);
+const results = ref();
 async function submitForm() {
   console.log(inputLinks.value);
   isLoading.value = !isLoading.value;
@@ -12,18 +13,20 @@ async function submitForm() {
     const count = await $fetch("/api/import", {
       method: "POST",
       body: {
-        urls: inputLinks.value.split("\n"),
+        url: inputLinks.value,
       },
     });
-    await syncData(0);
-    outputLinks.value = count.result;
+    // await syncData(0);
+    // outputLinks.value = count.result;
+    console.log(count)
+    results.value = count.result;
     isLoading.value = !isLoading.value;
     isSuccess.value = !isSuccess.value;
 
     setTimeout(() => {
       isSuccess.value = !isSuccess.value;
     }, 1500);
-    dialog.value = false;
+    // dialog.value = false;
   } catch (error) {
     isLoading.value = !isLoading.value;
     errorMsg.value = error;
@@ -36,7 +39,7 @@ const isSuccess = ref(false);
 <template>
   <v-dialog v-model="dialog" max-width="400" persistent>
     <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps"> Import Links </v-btn>
+      <v-btn variant="tonal" v-bind="activatorProps"> Import Links </v-btn>
     </template>
 
     <v-card>
@@ -44,6 +47,7 @@ const isSuccess = ref(false);
 
       <v-container fluid>
         <v-textarea
+        autofocus="true"
           label="Links"
           v-model="inputLinks"
           name="input-7-1"
@@ -62,7 +66,9 @@ const isSuccess = ref(false);
 
       <template v-slot:actions>
         <div class="flex flex-row w-full items-center justify-between">
-          <v-btn prepend-icon="mdi-close" @click="dialog = false">Cancel </v-btn>
+          <v-btn  prepend-icon="mdi-close" @click="dialog = false"
+            >Cancel
+          </v-btn>
           <v-btn
             prepend-icon="mdi-download"
             variant="tonal"

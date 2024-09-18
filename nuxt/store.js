@@ -1,16 +1,14 @@
-import { reactive } from 'vue'
-
+import { reactive } from "vue";
 
 export const store = reactive({
-    data: [],
-    isSaving: false,
-    isSaveFailure: false,
-    allItems: [],
-    navItems: [],
-    qualcomm: [],
-    mediatek: [],
-    commu: [],
-    phone: [],
-    other: []
-})
-
+  count: 0,
+  atext: "meow",
+  alist: [],
+  data: [],
+  isSaving: false,
+  isSaveFailure: false,
+  allItems: [],
+  addItem(item) {
+    this.allItems.push(item);
+  },
+});

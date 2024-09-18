@@ -1,7 +1,27 @@
 {
   "name": "nuxt-app",
+  "dependencies": {
+    "@nuxt/fonts": "^0.7.2",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.4",
+    "@vueuse/core": "^11.1.0",
+    "@vueuse/nuxt": "^11.1.0",
+    "browser-fs-access": "^0.35.0",
+    "cheerio": "^1.0.0",
+    "chrome-launcher": "^1.1.2",
+    "dms-scrape": "^0.1.2",
+    "docxtemplater": "^3.50.0",
+    "file-saver": "^2.0.5",
+    "nuxt": "^3.13.2",
+    "nuxt-icons": "^3.2.1",
+    "path": "^0.12.7",
+    "pinia": "^2.2.2",
+    "pizzip": "^3.1.7",
+    "sqlite3": "^5.1.7",
+    "vue": "latest",
+    "vuetify-nuxt-module": "^0.18.3"
+  },
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -9,29 +29,5 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
-  "dependencies": {
-    "@nuxt/fonts": "^0.7.2",
-    "@nuxtjs/tailwindcss": "^6.12.1",
-    "@vueuse/core": "^11.0.3",
-    "@vueuse/nuxt": "^11.0.3",
-    "browser-fs-access": "^0.35.0",
-    "cheerio": "^1.0.0",
-    "chrome-launcher": "^1.1.2",
-    "docxtemplater": "^3.50.0",
-    "file-saver": "^2.0.5",
-    "nuxt": "^3.13.0",
-    "nuxt-icons": "^3.2.1",
-    "path": "^0.12.7",
-    "pizzip": "^3.1.7",
-    "puppeteer": "^23.3.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7",
-    "vue": "latest",
-    "vuetify-nuxt-module": "^0.18.2"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.47.0"
-  }
+  "type": "module"
 }
