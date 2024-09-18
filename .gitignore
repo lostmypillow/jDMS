@@ -7,3 +7,4 @@ server/python/build
 server/python/dist
 server/python/main.spec
 *.sqlite
+*.docx
