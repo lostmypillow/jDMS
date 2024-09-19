@@ -1,5 +1,4 @@
 export const navCategories = [
-  
     "Qualcomm相關新聞",
     "MediaTek相關新聞",
     "無線通訊市場",

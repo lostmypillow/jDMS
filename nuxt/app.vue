@@ -2,7 +2,8 @@
 const route = useRoute();
 import { store } from "~/store";
 import DevSpace from "./components/devSpace.vue";
-
+import { dmsScrape } from "dms-scrape";
+import { useStorage } from "@vueuse/core";
 function formatAsHTML(inputText) {
   //"paragraph1\nparagraph2\nparagraph3"
   return inputText.replace(/\n\n/g, "<br><br>");
@@ -24,34 +25,64 @@ const dialog = ref(false);
 const results = ref();
 const errorMsg = ref("");
 const isSuccess = ref(false);
-async function submitForm() {
-  isLoading.value = !isLoading.value;
-  try {
-    if (!inputLinks.value.trim()) {
-      throw new Error("Input links cannot be empty.");
-    }
+const dataobj = ref();
+// async function submitForm() {
+//   isLoading.value = !isLoading.value;
+//   try {
+//     if (!inputLinks.value.trim()) {
+//       throw new Error("Input links cannot be empty.");
+//     }
 
-    for (const link of inputLinks.value.split("\n")) {
-      store.addItem(
-        await $fetch("/api/import", {
-          method: "POST",
-          body: {
-            url: link,
-          },
-        })
+//     for (const link of inputLinks.value.split("\n")) {
+//       dataobj.value = await dmsScrape("link", link)
+//       // store.addItem(
+//       //   await $fetch("/api/import", {
+//       //     method: "POST",
+//       //     body: {
+//       //       url: link,
+//       //     },
+//       //   })
+//       // );
+//       // localStorage.setItem('my-store', )
+
+//     }
+
+//     isLoading.value = !isLoading.value;
+//     isSuccess.value = !isSuccess.value;
+
+//     setTimeout(() => {
+//       isSuccess.value = !isSuccess.value;
+//     }, 1500);
+//   } catch (error) {
+//     isLoading.value = !isLoading.value;
+//     errorMsg.value = error;
+//   }
+// }
+
+async function submitForm(params) {
+  for (const link of inputLinks.value.split("\n")) {
+    if (store.data.find((x) => x.url == link) == undefined) {
+      const response = await dmsScrape("link", link);
+      const inputCategory = await response.category;
+      const listOfThatCat = store.data.filter(
+        (x) => x.category == inputCategory
       );
+      const newPriority = listOfThatCat.length + 1;
+      response["priority"] = newPriority;
+      store.addItem(response);
+      localStorage.setItem("data", JSON.stringify(store.data));
     }
-    isLoading.value = !isLoading.value;
-    isSuccess.value = !isSuccess.value;
-
-    setTimeout(() => {
-      isSuccess.value = !isSuccess.value;
-    }, 1500);
-  } catch (error) {
-    isLoading.value = !isLoading.value;
-    errorMsg.value = error;
   }
 }
+
+onMounted(() => {
+  if (localStorage.getItem("data") !== null) {
+    store.data = JSON.parse(localStorage.getItem("data"));
+  }
+});
+watch(store, (newData) => {
+  localStorage.setItem("data", JSON.stringify(store.data));
+});
 </script>
 <template>
   <v-layout class="rounded rounded-md">
@@ -63,7 +94,12 @@ async function submitForm() {
           <v-tab>Dev</v-tab>
           <v-tab prepend-icon="mdi-home">Home</v-tab>
           <v-tab prepend-icon="mdi-download">Import</v-tab>
-          <v-tab v-for="nav in navCategories" :value="nav">{{ nav }}</v-tab>
+          <v-tab
+            :disabled="store.data.length == 0"
+            v-for="nav in navCategories"
+            :value="nav"
+            >{{ nav }}</v-tab
+          >
           <v-tab prepend-icon="mdi-export">Export</v-tab>
         </v-tabs>
       </v-toolbar>
@@ -73,7 +109,8 @@ async function submitForm() {
           <DevSpace />
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="Home">Home</v-tabs-window-item>
+        <v-tabs-window-item value="Home"> Home </v-tabs-window-item>
+
         <v-tabs-window-item value="Import">
           <v-container fluid>
             <v-textarea
@@ -84,7 +121,6 @@ async function submitForm() {
               variant="filled"
               auto-grow
             ></v-textarea>
-            {{ store.allItems }}
           </v-container>
 
           <v-alert
@@ -96,18 +132,16 @@ async function submitForm() {
           >
 
           <div class="flex flex-row w-full items-center justify-between">
-            <v-btn prepend-icon="mdi-close" @click="dialog = false"
-              >Cancel
-            </v-btn>
+        
             <v-btn
               prepend-icon="mdi-download"
               variant="tonal"
               :class="
                 isLoading
-                  ? 'w-fit flex gap-4 '
+                  ? 'w-full flex gap-4 mx-4 '
                   : isSuccess
-                  ? 'w-fit flex gap-4'
-                  : ' w-fit flex gap-4 '
+                  ? 'w-full flex gap-4 mx-4 '
+                  : ' w-full flex gap-4 mx-4 '
               "
               :loading="isLoading"
               @click="submitForm"
@@ -118,11 +152,9 @@ async function submitForm() {
         </v-tabs-window-item>
 
         <v-tabs-window-item v-for="nav in navCategories" :value="nav">
-          <div class="flex flex-row">
-            <EditNav />
-            <EditCard :item="currentItem" />
-          </div>
+          <EditWindow :items="store.data.filter((x) => x.category == nav)" />
         </v-tabs-window-item>
+
         <v-tabs-window-item value="Export">
           <v-btn variant="tonal" @click="exportDocx">
             Export
