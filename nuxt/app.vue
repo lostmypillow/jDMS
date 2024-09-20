@@ -16,18 +16,27 @@ const errorMsg = ref("");
 const isSuccess = ref(false);
 
 async function submitForm(params) {
-  for (const link of inputLinks.value.split("\n")) {
-    if (store.data.find((x) => x.url == link) == undefined) {
-      const response = await dmsScrape("link", link);
-      const inputCategory = await response.category;
-      const listOfThatCat = store.data.filter(
-        (x) => x.category == inputCategory
-      );
-      const newPriority = listOfThatCat.length + 1;
-      response["priority"] = newPriority;
-      store.addItem(response);
-      localStorage.setItem("data", JSON.stringify(store.data));
+  try {
+    for (const link of inputLinks.value.split("\n")) {
+      if (store.data.find((x) => x.url == link) == undefined) {
+        const response = await dmsScrape("link", link);
+        console.log(response);
+
+        if (response.error == undefined) {
+          const inputCategory = await response.category;
+          const listOfThatCat = store.data.filter(
+            (x) => x.category == inputCategory
+          );
+          const newPriority = listOfThatCat.length + 1;
+          response["priority"] = newPriority;
+          store.addItem(response);
+        } else {
+          store.addUnsupported(response);
+        }
+      }
     }
+  } catch (error) {
+    errorMsg.value = error;
   }
 }
 
@@ -35,9 +44,14 @@ onMounted(() => {
   if (localStorage.getItem("data") !== null) {
     store.data = JSON.parse(localStorage.getItem("data"));
   }
+
+  if (localStorage.getItem("unsupported") !== null) {
+    store.unsupportedLinks = JSON.parse(localStorage.getItem("unsupported"));
+  }
 });
 watch(store, (newData) => {
   localStorage.setItem("data", JSON.stringify(store.data));
+  localStorage.setItem("unsupported", JSON.stringify(store.unsupportedLinks));
 });
 </script>
 <template>
@@ -68,41 +82,58 @@ watch(store, (newData) => {
         <v-tabs-window-item value="Home"> Home </v-tabs-window-item>
 
         <v-tabs-window-item value="Import">
-          <v-container fluid>
-            <v-textarea
-              autofocus="true"
-              label="Links"
-              v-model="inputLinks"
-              name="input-7-1"
-              variant="filled"
-              auto-grow
-            ></v-textarea>
-          </v-container>
+          <div class="flex flex-row">
+            <v-list lines="one">
+              <v-list-subheader>Manual Intervention Required:</v-list-subheader>
+              <v-list-item
+                v-for="link in store.data.length == 0
+                  ? store.unsupportedLinks.filter(
+                      (link) =>
+                        !new Set(store.data.map((obj) => obj.url)).has(link)
+                    )
+                  : store.unsupportedLinks"
+                :title="link.url"
+                a
+                target="_blank"
+                rel="noopener noreferrer"
+                :href="link.url"
+              ></v-list-item> </v-list
+            ><v-container fluid>
+              <v-textarea
+                autofocus="true"
+                label="Links"
+                v-model="inputLinks"
+                name="input-7-1"
+                variant="filled"
+                auto-grow
+              ></v-textarea>
 
-          <v-alert
-            v-show="errorMsg !== ''"
-            density="compact"
-            class="mx-4"
-            type="warning"
-            >{{ errorMsg }}</v-alert
-          >
+              <v-alert
+                v-show="errorMsg !== ''"
+                density="compact"
+                class="mx-4"
+                type="warning"
+                >{{ errorMsg }}</v-alert
+              >
 
-          <div class="flex flex-row w-full items-center justify-between">
-            <v-btn
-              prepend-icon="mdi-download"
-              variant="tonal"
-              :class="
-                isLoading
-                  ? 'w-full flex gap-4 mx-4 '
-                  : isSuccess
-                  ? 'w-full flex gap-4 mx-4 '
-                  : ' w-full flex gap-4 mx-4 '
-              "
-              :loading="isLoading"
-              @click="submitForm"
-            >
-              Import Links
-            </v-btn>
+              <div class="flex flex-row w-full items-center justify-between">
+                <v-btn
+                  prepend-icon="mdi-download"
+                  variant="tonal"
+                  :class="
+                    isLoading
+                      ? 'w-full flex gap-4  '
+                      : isSuccess
+                      ? 'w-full flex gap-4  '
+                      : ' w-full flex gap-4  '
+                  "
+                  :loading="isLoading"
+                  @click="submitForm"
+                >
+                  Import Links
+                </v-btn>
+              </div>
+            </v-container>
           </div>
         </v-tabs-window-item>
 

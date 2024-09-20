@@ -2,10 +2,13 @@ import { reactive } from "vue";
 import { useStorage } from "@vueuse/core";
 export const store = reactive({
   data: [],
-  allItems: [],
   docx: '',
+  unsupportedLinks:[],
   addItem(item) {
     this.data.push(item);
+  },
+  addUnsupported(item) {
+    this.unsupportedLinks.push(item)
   },
   swapPriorities(category, originalPriority, direction) {
     if (direction == "down") {
