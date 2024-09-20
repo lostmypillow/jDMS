@@ -1,6 +1,0 @@
-POST http://localhost:3000/api/import HTTP/1.1
-content-type: application/json
-
-{ "url": "https://www.ctee.com.tw/news/20240910700147-430804" }
-###
-GET http://localhost:3000/api/export HTTP/1.1

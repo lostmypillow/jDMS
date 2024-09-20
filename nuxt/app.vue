@@ -61,12 +61,11 @@ watch(store, (newData) => {
         <v-toolbar-title>JDMS</v-toolbar-title>
 
         <v-tabs v-model="tab">
-          <v-tab>Dev</v-tab>
-          <v-tab prepend-icon="mdi-home">Home</v-tab>
+        
           <v-tab prepend-icon="mdi-download">Import</v-tab>
           <v-tab
             :disabled="store.data.length == 0"
-            v-for="nav in navCategories"
+            v-for="nav in store.navCategories"
             :value="nav"
             >{{ nav }}</v-tab
           >
@@ -75,16 +74,15 @@ watch(store, (newData) => {
       </v-toolbar>
 
       <v-tabs-window v-model="tab" class="px-6 py-6 overflow-auto w-full">
-        <v-tabs-window-item value="Dev">
-          <DevSpace />
-        </v-tabs-window-item>
-
-        <v-tabs-window-item value="Home"> Home </v-tabs-window-item>
+     
 
         <v-tabs-window-item value="Import">
           <div class="flex flex-row">
             <v-list lines="one">
-              <v-list-subheader>Manual Intervention Required:</v-list-subheader>
+              <v-list-subheader>Manual Intervention Required: </v-list-subheader
+              ><v-btn size="small" class="ml-4" variant="outlined"
+                >What is Manual Intervention?</v-btn
+              >
               <v-list-item
                 v-for="link in store.data.length == 0
                   ? store.unsupportedLinks.filter(
@@ -98,16 +96,28 @@ watch(store, (newData) => {
                 rel="noopener noreferrer"
                 :href="link.url"
               ></v-list-item> </v-list
-            ><v-container fluid>
-              <v-textarea
-                autofocus="true"
-                label="Links"
-                v-model="inputLinks"
-                name="input-7-1"
-                variant="filled"
-                auto-grow
-              ></v-textarea>
-
+            ><div class="flex flex-col gap-4 items-center justify-center w-full">
+              <div class="flex flex-row-reverse items-center justify-between w-full">
+                <v-btn
+                prepend-icon="mdi-download"
+                variant="tonal"
+                :class="
+                  isLoading
+                    ? 'w-fit flex gap-4  '
+                    : isSuccess
+                    ? 'w-fit flex gap-4  '
+                    : ' w-fit flex gap-4  '
+                "
+                :loading="isLoading"
+                @click="submitForm"
+              >
+                Import Links
+              </v-btn>
+              <v-btn prepend-icon="mdi-info" size="small"  variant="outlined"
+                >What can I import?</v-btn
+              >
+              </div>
+              
               <v-alert
                 v-show="errorMsg !== ''"
                 density="compact"
@@ -115,29 +125,20 @@ watch(store, (newData) => {
                 type="warning"
                 >{{ errorMsg }}</v-alert
               >
-
-              <div class="flex flex-row w-full items-center justify-between">
-                <v-btn
-                  prepend-icon="mdi-download"
-                  variant="tonal"
-                  :class="
-                    isLoading
-                      ? 'w-full flex gap-4  '
-                      : isSuccess
-                      ? 'w-full flex gap-4  '
-                      : ' w-full flex gap-4  '
-                  "
-                  :loading="isLoading"
-                  @click="submitForm"
-                >
-                  Import Links
-                </v-btn>
-              </div>
-            </v-container>
+              <v-textarea
+                autofocus="true"
+                label="Links"
+                v-model="inputLinks"
+                name="input-7-1"
+                variant="filled"
+                class="w-full"
+                auto-grow
+              ></v-textarea>
+            </div>
           </div>
         </v-tabs-window-item>
 
-        <v-tabs-window-item v-for="nav in navCategories" :value="nav">
+        <v-tabs-window-item v-for="nav in store.navCategories" :value="nav">
           <EditWindow :items="store.data.filter((x) => x.category == nav)" />
         </v-tabs-window-item>
 
