@@ -3,6 +3,7 @@ import { useStorage } from "@vueuse/core";
 export const store = reactive({
   data: [],
   allItems: [],
+  docx: '',
   addItem(item) {
     this.data.push(item);
   },

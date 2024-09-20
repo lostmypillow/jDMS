@@ -1,14 +1,7 @@
 <script setup>
-const route = useRoute();
 import { store } from "~/store";
 import DevSpace from "./components/devSpace.vue";
 import { dmsScrape } from "dms-scrape";
-import { useStorage } from "@vueuse/core";
-function formatAsHTML(inputText) {
-  //"paragraph1\nparagraph2\nparagraph3"
-  return inputText.replace(/\n\n/g, "<br><br>");
-}
-
 const list = [
   "Qualcomm相關新聞",
   "MediaTek相關新聞",
@@ -17,47 +10,10 @@ const list = [
   "其他業界重要訊息",
 ];
 const tab = ref(null);
-const currentItem = ref();
-const selectedItems = ref();
 const isLoading = ref(false);
 const inputLinks = ref("");
-const dialog = ref(false);
-const results = ref();
 const errorMsg = ref("");
 const isSuccess = ref(false);
-const dataobj = ref();
-// async function submitForm() {
-//   isLoading.value = !isLoading.value;
-//   try {
-//     if (!inputLinks.value.trim()) {
-//       throw new Error("Input links cannot be empty.");
-//     }
-
-//     for (const link of inputLinks.value.split("\n")) {
-//       dataobj.value = await dmsScrape("link", link)
-//       // store.addItem(
-//       //   await $fetch("/api/import", {
-//       //     method: "POST",
-//       //     body: {
-//       //       url: link,
-//       //     },
-//       //   })
-//       // );
-//       // localStorage.setItem('my-store', )
-
-//     }
-
-//     isLoading.value = !isLoading.value;
-//     isSuccess.value = !isSuccess.value;
-
-//     setTimeout(() => {
-//       isSuccess.value = !isSuccess.value;
-//     }, 1500);
-//   } catch (error) {
-//     isLoading.value = !isLoading.value;
-//     errorMsg.value = error;
-//   }
-// }
 
 async function submitForm(params) {
   for (const link of inputLinks.value.split("\n")) {
@@ -132,7 +88,6 @@ watch(store, (newData) => {
           >
 
           <div class="flex flex-row w-full items-center justify-between">
-        
             <v-btn
               prepend-icon="mdi-download"
               variant="tonal"
@@ -156,10 +111,8 @@ watch(store, (newData) => {
         </v-tabs-window-item>
 
         <v-tabs-window-item value="Export">
-          <v-btn variant="tonal" @click="exportDocx">
-            Export
-          </v-btn></v-tabs-window-item
-        >
+          <v-btn variant="tonal" @click="exportDocx"> Export </v-btn>
+        </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
   </v-layout>

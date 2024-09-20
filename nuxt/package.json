@@ -10,6 +10,7 @@
     "cheerio": "^1.0.0",
     "chrome-launcher": "^1.1.2",
     "dms-scrape": "^0.1.3",
+    "docx": "^8.5.0",
     "docxtemplater": "^3.50.0",
     "docxtemplater-link-module": "^0.2.4",
     "file-saver": "^2.0.5",
