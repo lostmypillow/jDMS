@@ -1,9 +1,24 @@
-server/node_modules
-client/node_modules
-electron/node_modules
-app-out.js
-.venv/*
-server/python/build
-server/python/dist
-server/python/main.spec
-*.sqlite
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example

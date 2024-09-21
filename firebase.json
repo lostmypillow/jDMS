@@ -1,0 +1,39 @@
+{
+  "functions": {
+    "source": ".output/server",
+    "runtime": "nodejs20",
+    "region": "asia-east1"
+  },
+  "hosting": {
+    "site": "compassprdms",
+    "public": ".output/public",
+    "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "server",
+        "region": "asia-east1"
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}

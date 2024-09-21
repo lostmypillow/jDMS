@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "jdms",
   "dependencies": {
     "@nuxt/fonts": "^0.7.2",
     "@nuxtjs/tailwindcss": "^6.12.1",
@@ -10,8 +10,13 @@
     "docx": "^8.5.0",
     "docxtemplater": "^3.50.0",
     "file-saver": "^2.0.5",
+    "firebase": "10.13.2",
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^6.0.1",
+    "https": "^1.0.0",
     "nuxt": "^3.13.2",
     "nuxt-icons": "^3.2.1",
+    "nuxt-vuefire": "^1.0.4",
     "pizzip": "^3.1.7",
     "vue": "latest",
     "vuetify-nuxt-module": "^0.18.3"
@@ -24,5 +29,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "firebase-functions-test": "^3.3.0"
+  }
 }

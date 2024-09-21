@@ -1,28 +1,75 @@
-# jDMS (Work In Progress)
-## What is it?
-A full stack web scraper to automate my daily task in the company I intern in.
+# Nuxt 3 Minimal Starter
 
-## How does it work?
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-![Screenshot (10)](https://github.com/user-attachments/assets/0a172ae7-27b9-4f56-a84a-b623378519c7)
+## Setup
 
+Make sure to install the dependencies:
 
+```bash
+# npm
+npm install
 
-## Screenshots of current build
-![Screenshot 2024-09-03 at 17-13-52 JDMS](https://github.com/user-attachments/assets/d8ddcfcd-4afa-40c1-b633-8eac9ab0b1e1)
+# pnpm
+pnpm install
 
-![Screenshot 2024-09-02 at 17-29-33 JDMS](https://github.com/user-attachments/assets/6ec1c139-5d64-4cd6-999a-606ff802f306)
+# yarn
+yarn install
 
-![Screenshot 2024-09-02 at 17-29-47 JDMS](https://github.com/user-attachments/assets/dcba3324-a464-4226-b28e-0d937132daf7)
+# bun
+bun install
+```
 
+## Development Server
 
-   
-## Tech Stack
-- **Express** API endpoints
-- **Puppeteer** and **Cheerio** for HTML download and traversing
+Start the development server on `http://localhost:3000`:
 
-## Download Link
-(TBA)
+```bash
+# npm
+npm run dev
 
-## LINE Bot QR Code
-![602auxqx](https://github.com/user-attachments/assets/949a2f5e-6f59-4fd9-938d-7e069794ef30)
+# pnpm
+pnpm run dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm run build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+Locally preview production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm run preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

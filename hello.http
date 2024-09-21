@@ -1,4 +1,4 @@
-POST http://127.0.0.1:5001/jdms-63d90/us-central1/addLink HTTP/1.1
+POST http://127.0.0.1:5001/compassprdms/asia-east1/server/api/import HTTP/1.1
 content-type: application/json
 
 // When a user sends a text message containing mention and an emoji in a group chat

@@ -53,9 +53,63 @@ watch(store, (newData) => {
   localStorage.setItem("data", JSON.stringify(store.data));
   localStorage.setItem("unsupported", JSON.stringify(store.unsupportedLinks));
 });
+
+const tabvmodel = ref("import");
+const items = ref(["efe", "efe", "efef"]);
 </script>
 <template>
-  <v-layout class="rounded rounded-md">
+  <div
+    class="w-full flex items-center justify-center h-14 border-2 border-red-500 z-500 absolute"
+  >
+    <!-- :elevation="tabvmodel == 'import'? '5' : '0'"  -->
+    <v-btn-toggle
+      elevation="10"
+      color="primary"
+      rounded="xl"
+      v-model="tabvmodel"
+    >
+      <v-btn value="import">Import</v-btn>
+      <v-btn value="edit">Edit</v-btn>
+      <v-btn value="export">Export</v-btn>
+    </v-btn-toggle>
+  </div>
+
+  <div class="w-svw h-svh items-center justify-center pt-14">
+      <!-- <v-tabs v-if="tabvmodel == 'edit'" class="w-full" background-color="transparent" fixed-tabs v-model="tab" grow>
+        <v-tab
+          v-for="item in store.navCategories"
+          :text="item"
+         :value="item"
+        ></v-tab>
+      </v-tabs>
+
+      <v-tabs-window v-if="tabvmodel == 'edit'" v-model="tab">
+        <v-tabs-window-item v-for="item in store.navCategories" :key="item" :value="item">
+          <p>{{ item }}</p>
+        </v-tabs-window-item>
+      </v-tabs-window>  -->
+      <div class="flex flex-row w-full h-full p-6" v-if="tabvmodel == 'edit'">
+        <v-list
+          class="w-1/5 border-red-500 border-2"
+          v-for="i in store.navCategories"
+        >
+          <v-list-subheader>{{ i }}</v-list-subheader>
+          <v-list-item><v-btn>I am a button</v-btn></v-list-item>
+        </v-list>
+      </div>
+
+      <div class="flex flex-row h-full w-full" v-if="tabvmodel == 'import'">
+       <div class="flex flex-col items-center justify-center w-1/2">
+        <div class="flex items-center h-1/2">im top</div>
+        <div class="flex items-center h-1/2"> im bottom</div>
+      </div>
+       <div class="flex items-center justify-center w-1/2"> im another</div>
+      </div>
+      <div v-else>I am bottom</div>
+    </div>
+  
+
+  <!-- <v-layout class="rounded rounded-md">
     <v-main height="100vh" class="flex flex-col items-start justify-start">
       <v-toolbar color="primary">
         <v-toolbar-title>JDMS</v-toolbar-title>
@@ -147,7 +201,7 @@ watch(store, (newData) => {
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
-  </v-layout>
+  </v-layout> -->
 </template>
 <style>
 :root {
