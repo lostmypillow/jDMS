@@ -1,9 +1,12 @@
 import { reactive } from "vue";
 import { useStorage } from "@vueuse/core";
+
 export const store = reactive({
   data: [],
   docx: '',
+  tab: 'import',
   unsupportedLinks:[],
+  errorMsg: '',
   addItem(item) {
     this.data.push(item);
   },
