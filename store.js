@@ -3,15 +3,30 @@ import { useStorage } from "@vueuse/core";
 
 export const store = reactive({
   data: [],
-  docx: '',
-  tab: 'import',
-  unsupportedLinks:[],
-  errorMsg: '',
+  docx: "",
+  tab: "import",
+  unsupportedLinks: [],
+  errorMsg: "",
+  isImporting: false,
+  isImportingLINE: false,
+  addTitle: "",
+  addDate: "",
+  addSource: "",
+  addAuthor: "",
+  addCategory: "",
+  addContent: "",
+  sortByPriority() {
+    this.data.sort((a, b) => a.priority - b.priority);
+  },
   addItem(item) {
+    const inputCategory = item.category;
+    item["priority"] =
+      this.data.filter((x) => x.category == inputCategory).length + 1;
     this.data.push(item);
+    this.sortByPriority();
   },
   addUnsupported(item) {
-    this.unsupportedLinks.push(item)
+    this.unsupportedLinks.push(item);
   },
   swapPriorities(category, originalPriority, direction) {
     if (direction == "down") {
@@ -37,6 +52,7 @@ export const store = reactive({
         (x) => x.category == category && x.priority == 0
       ).priority = prevPriority;
     }
+    this.sortByPriority();
   },
   navCategories: [
     "Qualcomm相關新聞",
@@ -44,5 +60,5 @@ export const store = reactive({
     "無線通訊市場",
     "智慧型手機/消費性電子產品",
     "其他業界重要訊息",
-  ]
+  ],
 });

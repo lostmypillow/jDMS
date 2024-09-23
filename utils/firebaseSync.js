@@ -9,7 +9,7 @@ const firebaseConfig = {
   messagingSenderId: "189553958868",
   appId: "1:189553958868:web:38e313ca61559c42d74041",
 };
-
+import { store } from "~/store";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const snapshotLinks = ref([]);
@@ -24,13 +24,16 @@ export default function () {
   ).padStart(2, "0")}`;
   const docRef = doc(db, collectionName, documentName);
   onSnapshot(docRef, async (doc) => {
+    store.isImportingLINE = true
     const docData = doc.data() ? doc.data() : "No doc data";
     console.log("Current data: ", docData);
     newLinks.value = doc.data()
       ? doc.data().links.filter((x) => !snapshotLinks.value.includes(x))
       : "no new links";
     console.log("New Link: ", newLinks.value);
+    await manualImport(newLinks.value)
     snapshotLinks.value = doc.data() ? doc.data().links : "no snapshot links";
     console.log("new Snapshot: ", snapshotLinks.value);
+    store.isImportingLINE = false
   });
 }

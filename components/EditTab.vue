@@ -1,14 +1,189 @@
 <script setup>
-import { store } from '~/store';
+import { store } from "~/store";
+const dialog = ref(false);
+const editDialog = ref(false);
+const currentURL = ref("");
+function openEditDialog(url) {
+  editDialog.value = true;
+  currentURL.value = url;
+}
 </script>
 <template>
-    <div class="flex flex-row w-full h-full p-6" v-if="store.tab == 'edit'"  >
-      <v-list
-        class="w-1/5 border-red-500 border-2"
-        v-for="i in store.navCategories"
+  <v-dialog activator="#activator-target" class="w-2/3">
+    <template v-slot:default="{ isActive }">
+      <v-card
+        v-if="store.data.find((x) => x.url == currentURL)"
+        class="px-8 py-4 w-full flex flex-col gap-4"
+        rounded="xl"
       >
-        <v-list-subheader>{{ i }}</v-list-subheader>
-        <v-list-item><v-btn>I am a button</v-btn></v-list-item>
-      </v-list>
-    </div>
+        <div class="flex flex-row w-full items-center justify-between">
+          <p class="p-4 text-xl">
+            News Content No.{{
+              store.data.find((x) => x.url == currentURL).priority
+            }}
+          </p>
+          <v-btn
+            class="ms-auto font-bold"
+            prepend-icon="mdi-close"
+            @click="isActive.value = false"
+            rounded="xl"
+            >Close</v-btn
+          >
+        </div>
+
+        <v-text-field
+          class="px-4"
+          v-model="store.data.find((x) => x.url == currentURL).title"
+          label="Title"
+        ></v-text-field>
+        <div class="flex flex-row">
+          <v-text-field
+            class="px-4"
+            v-model="store.data.find((x) => x.url == currentURL).date"
+            label="Date"
+          ></v-text-field>
+          <v-text-field
+            class="px-4"
+            v-model="store.data.find((x) => x.url == currentURL).source"
+            label="Source"
+          ></v-text-field>
+          <v-text-field
+            class="px-4"
+            v-model="store.data.find((x) => x.url == currentURL).author"
+            label="Author"
+          ></v-text-field>
+          <v-select
+            class="w-fit pl-4"
+            label="Category"
+            :items="[
+              'Qualcomm相關新聞',
+              'MediaTek相關新聞',
+              '無線通訊市場',
+              '智慧型手機/消費性電子產品',
+              '其他業界重要訊息',
+            ]"
+            v-model="store.data.find((x) => x.url == currentURL).category"
+            variant="underlined"
+          ></v-select>
+        </div>
+
+        <div class="flex flex-row px-4 gap-2">
+          <v-text-field
+            v-model="store.data.find((x) => x.url == currentURL).url"
+          ></v-text-field>
+          <v-btn
+            variant="tonal"
+            :href="store.data.find((x) => x.url == currentURL).url"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="mdi-web"
+          ></v-btn>
+        </div>
+
+        <v-textarea
+          autofocus="true"
+          label="Content"
+          v-model="store.data.find((x) => x.url == currentURL).content"
+          name="input-7-1"
+          variant="filled"
+          class="mx-4"
+          auto-grow
+        ></v-textarea>
+
+        <!-- <p>ID: {{ item.id }}</p> -->
+
+        <!-- <p v-html="formatAsHTML(item.content)"></p> -->
+
+        <!-- <v-container fluid>
+          <v-textarea
+            label="Content"
+            v-model="props.item.content"
+            name="input-7-1"
+            variant="filled"
+            auto-grow
+          ></v-textarea>
+        </v-container> -->
+
+        <!-- <v-card-actions>
+          <v-btn
+            variant="tonal"
+            a
+            :href="props.item.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Link</v-btn
+          >
+        </v-card-actions> -->
+      </v-card>
+    </template>
+  </v-dialog>
+  <v-dialog v-model="dialog" max-width="400" persistent>
+    <v-card prepend-icon="mdi-map-marker">
+      <v-text-field v-model="store.addTitle" label="title"></v-text-field>
+      <v-text-field v-model="store.addDate" label="date"></v-text-field>
+      <v-text-field v-model="store.addSource" label="source"></v-text-field>
+      <v-text-field v-model="store.addAuthor" label="author"></v-text-field>
+
+      <template v-slot:actions>
+        <v-spacer></v-spacer>
+
+        <v-btn @click="dialog = false"> Disagree </v-btn>
+
+        <v-btn @click="dialog = false"> Agree </v-btn>
+      </template>
+    </v-card>
+  </v-dialog>
+
+  <div class="flex flex-row w-full h-full p-6" v-if="store.tab == 'edit'">
+    <v-list
+      class="w-1/5 border-red-500 border-2"
+      v-for="i in store.navCategories"
+    >
+      <v-list-subheader>
+        {{ i }}
+      </v-list-subheader>
+
+      <v-btn @click="dialog = true" prepend-icon="mdi-plus" class="m-4"
+        >Add</v-btn
+      >
+
+      <v-list-item
+        v-for="n in store.data.filter((x) => x.category == i)"
+        rounded
+        class="mb-4 px-4 py-2"
+      >
+        <div class="flex flex-col items-center justify-between w-full py-4">
+          <p class="hover:underline pointer-events-auto">
+            {{ n.title }}
+          </p>
+
+          <div class="flex flex-row items-center justify-between gap-2 w-full">
+            <v-btn
+              @click="store.swapPriorities(n.category, n.priority, 'up')"
+              icon="mdi-arrow-up"
+              size="small"
+              :disabled="n.priority == 1"
+            >
+            </v-btn>
+
+            <v-btn
+              @click="openEditDialog(n.url)"
+              id="activator-target"
+              rounded="xl"
+              >Edit</v-btn
+            >
+            <v-btn
+              icon="mdi-arrow-down"
+              size="small"
+              @click="store.swapPriorities(n.category, n.priority, 'down')"
+              :disabled="
+                n.priority == store.data.filter((x) => x.category == i).length
+              "
+            >
+            </v-btn>
+          </div>
+        </div>
+      </v-list-item>
+    </v-list>
+  </div>
 </template>

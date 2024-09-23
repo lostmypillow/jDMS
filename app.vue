@@ -117,7 +117,7 @@ watch(store, (newData) => {
 </template>
 <style>
 :root {
-  font-family: "Noto Sans TC";
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-smooth: auto;
 }
 html {

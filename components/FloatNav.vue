@@ -9,7 +9,7 @@ watch(currentT, (newCurrent) => {
 
 <template>
   <div
-    class="w-full flex items-center justify-center h-14 border-2 border-red-500 z-500 absolute"
+    class="w-full flex items-center justify-center h-14 z-500 absolute"
   >
     <v-btn-toggle
       elevation="10"
