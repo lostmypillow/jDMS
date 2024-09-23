@@ -9,14 +9,19 @@ const textt = ref("meow\nmeow");
   <div class="flex flex-row">
     <div class="flex-none w-1/5 mr-4 overflow-auto max-h-svh">
       <v-list lines="one" variant="tonal">
+        <v-list-item-group
+        v-model="selectedItem"
+        color="primary"
+      >
         <v-list-item
           v-for="n in props.items.sort((a, b) => a.priority - b.priority)"
           rounded
           class="mb-4 px-4 py-2"
+   @update:selected="selected"
         >
           <div class="flex flex-row items-center justify-between w-full py-4">
             <p
-              class="hover:underline pointer-events-auto"
+             
               @click="currentURL = n.url"
             >
               {{ n.title }}
@@ -38,7 +43,8 @@ const textt = ref("meow\nmeow");
               </v-btn>
             </div>
           </div>
-        </v-list-item>
+     
+        </v-list-item></v-list-item-group>
       </v-list>
     </div>
 
