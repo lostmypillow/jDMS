@@ -1,7 +1,7 @@
 <script setup>
 import { store } from "~/store";
 
-// firebaseSync()
+firebaseSync()
 
 onMounted(() => {
  storageSync("toStore")

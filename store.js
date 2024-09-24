@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { useStorage } from "@vueuse/core";
-
+import { v4 as uuid } from 'uuid'
 export const store = reactive({
   data: [],
   docx: "",
@@ -15,6 +15,10 @@ export const store = reactive({
   addAuthor: "",
   addCategory: "",
   addContent: "",
+  getTitle(id) {
+    return this.data
+      .find((x) => x.id == id);
+  },
   sortByPriority() {
     this.data.sort((a, b) => a.priority - b.priority);
   },
@@ -22,6 +26,7 @@ export const store = reactive({
     const inputCategory = item.category;
     item["priority"] =
       this.data.filter((x) => x.category == inputCategory).length + 1;
+      item["id"] = uuid()
     this.data.push(item);
     this.sortByPriority();
   },

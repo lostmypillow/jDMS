@@ -23,10 +23,71 @@ content-type: application/json
         "id": "444573844083572737",
         "type": "text",
         "quoteToken": "q3Plxr4AgKd...",
-        "text": "www.ctee.com.tw/news/20240805700832-431207"
+        "text": "https://www.ctee.com.tw/news/20240805700832-431207"
       }
     }
   ]
 }
 
 ### 
+POST http://127.0.0.1:5001/compassprdms/asia-east1/server/import HTTP/1.1
+content-type: application/json
+
+// When a user sends a text message containing mention and an emoji in a group chat
+{
+  "destination": "xxxxxxxxxx",
+  "events": [
+    {
+      "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+      "type": "message",
+      "mode": "active",
+      "timestamp": 1462629479859,
+      "source": {
+        "type": "group",
+        "groupId": "Ca56f94637c...",
+        "userId": "U4af4980629..."
+      },
+      "webhookEventId": "01FZ74A0TDDPYRVKNK77XKC3ZR",
+      "deliveryContext": {
+        "isRedelivery": false
+      },
+      "message": {
+        "id": "444573844083572737",
+        "type": "text",
+        "quoteToken": "q3Plxr4AgKd...",
+        "text": "https://mashdigi.com/qualcomm-continues-to-launch-the-snapdragon-x-plus-processor-composed-of-8-sets-of-performance-cores-expanding-the-copilot-pc-product-lineup/"
+      }
+    }
+  ]
+}
+### 
+POST http://127.0.0.1:5001/compassprdms/asia-east1/server/import HTTP/1.1
+content-type: application/json
+
+// When a user sends a text message containing mention and an emoji in a group chat
+{
+  "destination": "xxxxxxxxxx",
+  "events": [
+    {
+      "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+      "type": "message",
+      "mode": "active",
+      "timestamp": 1462629479859,
+      "source": {
+        "type": "group",
+        "groupId": "Ca56f94637c...",
+        "userId": "U4af4980629..."
+      },
+      "webhookEventId": "01FZ74A0TDDPYRVKNK77XKC3ZR",
+      "deliveryContext": {
+        "isRedelivery": false
+      },
+      "message": {
+        "id": "444573844083572737",
+        "type": "text",
+        "quoteToken": "q3Plxr4AgKd...",
+        "text": "https://www.cool3c.com/article/223564"
+      }
+    }
+  ]
+}

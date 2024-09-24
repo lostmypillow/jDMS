@@ -2,54 +2,58 @@
 import { store } from "~/store";
 const dialog = ref(false);
 const editDialog = ref(false);
-const currentURL = ref("");
-function openEditDialog(url) {
-  editDialog.value = true;
-  currentURL.value = url;
+const currentId = ref("");
+
+function openEditDialog(id) {
+  currentId.value = id
+  // editDialog.value = true;
+  console.log(store.getTitle(currentId.value))
+
+
 }
+
 </script>
 <template>
-  <v-dialog activator="#activator-target" class="w-2/3">
-    <template v-slot:default="{ isActive }">
+  <v-dialog v-model="editDialog"">
+
       <v-card
-        v-if="store.data.find((x) => x.url == currentURL)"
+        
         class="px-8 py-4 w-full flex flex-col gap-4"
         rounded="xl"
       >
         <div class="flex flex-row w-full items-center justify-between">
           <p class="p-4 text-xl">
-            News Content No.{{
-              store.data.find((x) => x.url == currentURL).priority
-            }}
+            News Content No. {{ store.getTitle(currentId).title }}
           </p>
-          <v-btn
+          <!-- <v-btn
             class="ms-auto font-bold"
             prepend-icon="mdi-close"
-            @click="isActive.value = false"
+            @click="editDialog = false"
             rounded="xl"
-            >Close</v-btn
-          >
+            >
+            Close
+            </v-btn>-->
         </div>
 
-        <v-text-field
+        <!-- <v-text-field
           class="px-4"
-          v-model="store.data.find((x) => x.url == currentURL).title"
+          v-model="store.getTitle(currentId).title"
           label="Title"
-        ></v-text-field>
-        <div class="flex flex-row">
+        ></v-text-field>  -->
+     <!-- <div class="flex flex-row">
           <v-text-field
             class="px-4"
-            v-model="store.data.find((x) => x.url == currentURL).date"
+            v-model="store.getTitle(currentId).date"
             label="Date"
           ></v-text-field>
           <v-text-field
             class="px-4"
-            v-model="store.data.find((x) => x.url == currentURL).source"
+            v-model="store.getTitle(currentId).source"
             label="Source"
           ></v-text-field>
           <v-text-field
             class="px-4"
-            v-model="store.data.find((x) => x.url == currentURL).author"
+            v-model="store.getTitle(currentId).author"
             label="Author"
           ></v-text-field>
           <v-select
@@ -62,61 +66,40 @@ function openEditDialog(url) {
               '智慧型手機/消費性電子產品',
               '其他業界重要訊息',
             ]"
-            v-model="store.data.find((x) => x.url == currentURL).category"
+            v-model="store.getTitle(currentIdd).category"
             variant="underlined"
           ></v-select>
-        </div>
+        </div> -->
 
-        <div class="flex flex-row px-4 gap-2">
+       <!-- <div class="flex flex-row px-4 gap-2">
           <v-text-field
-            v-model="store.data.find((x) => x.url == currentURL).url"
+            v-model="store.getTitle(currentId).url"
           ></v-text-field>
           <v-btn
             variant="tonal"
-            :href="store.data.find((x) => x.url == currentURL).url"
+            :href="store.getTitle(currentId).url"
             target="_blank"
             rel="noopener noreferrer"
             icon="mdi-web"
           ></v-btn>
-        </div>
+        </div>  -->
 
-        <v-textarea
-          autofocus="true"
+        <!-- <v-textarea
+        
           label="Content"
-          v-model="store.data.find((x) => x.url == currentURL).content"
+          v-model="store.getTitle(currentId).content"
           name="input-7-1"
           variant="filled"
           class="mx-4"
           auto-grow
-        ></v-textarea>
+        ></v-textarea>  -->
 
-        <!-- <p>ID: {{ item.id }}</p> -->
-
-        <!-- <p v-html="formatAsHTML(item.content)"></p> -->
-
-        <!-- <v-container fluid>
-          <v-textarea
-            label="Content"
-            v-model="props.item.content"
-            name="input-7-1"
-            variant="filled"
-            auto-grow
-          ></v-textarea>
-        </v-container> -->
-
-        <!-- <v-card-actions>
-          <v-btn
-            variant="tonal"
-            a
-            :href="props.item.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Link</v-btn
-          >
-        </v-card-actions> -->
+      
       </v-card>
-    </template>
+
   </v-dialog>
+
+
   <v-dialog v-model="dialog" max-width="400" persistent>
     <v-card prepend-icon="mdi-map-marker">
       <v-text-field v-model="store.addTitle" label="title"></v-text-field>
@@ -167,8 +150,7 @@ function openEditDialog(url) {
             </v-btn>
 
             <v-btn
-              @click="openEditDialog(n.url)"
-              id="activator-target"
+           @click="openEditDialog(n.id)"
               rounded="xl"
               >Edit</v-btn
             >
