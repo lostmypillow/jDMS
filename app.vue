@@ -1,13 +1,19 @@
 <script setup>
 import { store } from "~/store";
+import hasMatchingURLs from "./utils/hasMatchingURLs";
 
-firebaseSync()
+firebaseSync();
 
 onMounted(() => {
- storageSync("toStore")
+  storageSync("toStore");
 });
 watch(store, (newData) => {
- storageSync("toLocalStorage")
+  storageSync("toLocalStorage");
+  if (hasMatchingURLs(store.data, store.unsupportedLinks)) {
+    store.unsupportedLinks = store.unsupportedLinks.filter(
+      (x) => !store.data.some((y) => y.url === x.url)
+    );
+  }
 });
 </script>
 <template>
@@ -109,7 +115,7 @@ watch(store, (newData) => {
         </v-tabs-window-item>
 
         <v-tabs-window-item value="Export">
-          <v-btn variant="tonal" @click="exportDocx"> Export </v-btn>
+        
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -117,7 +123,8 @@ watch(store, (newData) => {
 </template>
 <style>
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-smooth: auto;
 }
 html {

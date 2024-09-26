@@ -98,7 +98,6 @@ async function generateDocx() {
       commuList: commuList,
       phoneList: phoneList,
       otherList: otherList,
-      fod: "{{my_patch}}",
     };
 
     doc.render(data);
@@ -164,7 +163,7 @@ async function onFileChange(blob, listOfUrl) {
       });
 
       const newfilename =
-        new Date().toISOString().split("T")[0] + " Patched_Document.docx";
+        new Date().toISOString().split("T")[0] + " Qualcomm DMS.docx";
       saveAs(patchedBlob, newfilename);
     } catch (error) {
       console.error("Error patching document:", error);

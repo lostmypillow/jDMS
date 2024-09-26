@@ -1,6 +1,6 @@
 import { reactive } from "vue";
-import { useStorage } from "@vueuse/core";
-import { v4 as uuid } from 'uuid'
+
+import { v4 as uuid } from "uuid";
 export const store = reactive({
   data: [],
   docx: "",
@@ -13,22 +13,57 @@ export const store = reactive({
   addDate: "",
   addSource: "",
   addAuthor: "",
+  addURL: "",
   addCategory: "",
   addContent: "",
-  getTitle(id) {
-    return this.data
-      .find((x) => x.id == id);
+  getSingleObj(id) {
+    return this.data.find((x) => x.id == id);
   },
   sortByPriority() {
+    function isSequential(arr, key = "priority") {
+      if (arr.length === 0) return false;
+
+      if (arr[0][key] !== 1) return false;
+
+      for (let i = 1; i < arr.length; i++) {
+        if (arr[i][key] !== arr[i - 1][key] + 1) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    for (const nav of this.navCategories) {
+      if (!isSequential(this.data.filter((x) => x.category == nav))) {
+        for (
+          let i = 0;
+          i < this.data.filter((x) => x.category == nav).length;
+          i++
+        ) {
+          this.data.filter((x) => x.category == nav)[i]["priority"] = i + 1; 
+        }
+      }
+    }
+
     this.data.sort((a, b) => a.priority - b.priority);
   },
+  changeCategory(objID, changedCategory) {
+    this.data.find((x) => x.id == objID).priority = this.data.filter(
+      (x) => x.category == changedCategory
+    ).length;
+    this.sortByPriority();
+  },
   addItem(item) {
+    console.log("addItem started");
     const inputCategory = item.category;
+    if (item["id"] == undefined) {
+      item["id"] = uuid();
+    }
     item["priority"] =
       this.data.filter((x) => x.category == inputCategory).length + 1;
-      item["id"] = uuid()
     this.data.push(item);
     this.sortByPriority();
+    console.log("addItem ended");
   },
   addUnsupported(item) {
     this.unsupportedLinks.push(item);
@@ -66,4 +101,5 @@ export const store = reactive({
     "智慧型手機/消費性電子產品",
     "其他業界重要訊息",
   ],
+  count: 0,
 });

@@ -23,3 +23,4 @@ logs
 .env.*
 !.env.example
 *.sqlite
+.firebase/hosting.Lm91dHB1dFxwdWJsaWM.cache

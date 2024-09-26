@@ -5,6 +5,10 @@ const isSuccess = ref(false);
 const errorMsg = ref("");
 const inputLink = ref("");
 import { store } from "~/store";
+async function handleClick() {
+await manualImport(inputLink.value)
+inputLink.value = ""
+}
 </script>
 <template>
   <div
@@ -18,11 +22,7 @@ import { store } from "~/store";
    
       <v-list-item
       variant="tonal"
-        v-for="link in store.data.length == 0
-          ? store.unsupportedLinks.filter(
-              (link) => !new Set(store.data.map((obj) => obj.url)).has(link)
-            ).filter((x) => x == 'no new links')
-          : store.unsupportedLinks"
+        v-for="link in store.unsupportedLinks"
         :title="link.url"
         a
         target="_blank"
@@ -50,16 +50,15 @@ import { store } from "~/store";
               icon="mdi-send"
               variant="tonal"
               :loading="isLoading"
-              @click="manualImport(inputLink)"
+              @click="handleClick"
             >
-            </v-btn>
-          </template> </v-text-field
-        ><v-alert
+            </v-btn><v-alert
           v-show="store.errorMsg !== ''"
           density="compact"
-          class="mx-4"
           type="warning"
           >{{ store.errorMsg }}</v-alert
+        >
+          </template> </v-text-field
         >
       </div>
     </div>

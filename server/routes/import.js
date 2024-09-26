@@ -35,18 +35,18 @@ export default defineEventHandler(async (event) => {
     try {
       const snapshot = await docRef.where("url", "==", newLink).get();
       const snapshotu = await docRefU.where("url", "==", newLink).get();
-      if (snapshot.empty && snapshotu.empty) {
+      if (snapshot.empty) {
         console.log("No matching documents.");
         const response = await dmsScrape("link", newLink);
         console.log("dmsScrape says:", await response);
-        if ((await response).error == "unsupported link") {
-          const res = await docRefU.add(await response);
-          console.log("Added unsupported document with ID: ", res.id);
-        } else {
-          const res = await docRef.add(await response);
-          console.log("Added supported document with ID: ", res.id);
-        }
-
+        // if ((await response).error == "unsupported link") {
+        // const res = await docRefU.add(await response);
+        // console.log("Added unsupported document with ID: ", res.id);
+        // } else {
+        response["id"] = uuid();
+        const res = await docRef.add(response);
+        console.log("Added supported document with ID: ", res.id);
+        // }
         return;
       } else {
         console.log("document found, doing nothing");

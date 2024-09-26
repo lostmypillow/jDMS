@@ -6,10 +6,10 @@ export default defineNuxtConfig({
       nodeVersion: '20',
       httpsOptions: {
         region: 'asia-east1',
-        maxInstances: 3,
       },
     },
   },
+  ssr: false,
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   modules: [
