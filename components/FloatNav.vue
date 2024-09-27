@@ -1,10 +1,5 @@
 <script setup>
-const props = defineProps(["currentTab"]);
-const currentT = ref("import");
-import { store } from "~/store";
-watch(currentT, (newCurrent) => {
-  store.tab = currentT.value;
-});
+import { store } from '~/stores/store';
 </script>
 
 <template>
@@ -15,7 +10,8 @@ watch(currentT, (newCurrent) => {
       elevation="10"
       color="primary"
       rounded="xl"
-      v-model="currentT"
+      v-model="store.tab"
+      mandatory
     >
       <v-btn value="import">Import</v-btn>
       <v-btn value="edit">Edit</v-btn>

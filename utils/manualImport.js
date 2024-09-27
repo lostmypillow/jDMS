@@ -1,4 +1,4 @@
-import { store } from "~/store";
+import { store } from "~/stores/store";
 import { dmsScrape } from "dms-scrape";
 export default async function (link) {
   store.isImporting = true;

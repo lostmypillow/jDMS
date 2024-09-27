@@ -1,30 +1,51 @@
 <script setup>
-import { store } from "~/store";
-import hasMatchingURLs from "./utils/hasMatchingURLs";
 
-firebaseSync();
+import { firebaseStore } from "./stores/firebaseStore";
+firebaseStore.initDb()
+// firebaseSync();
 
-onMounted(() => {
-  storageSync("toStore");
-});
-watch(store, (newData) => {
-  storageSync("toLocalStorage");
-  if (hasMatchingURLs(store.data, store.unsupportedLinks)) {
-    store.unsupportedLinks = store.unsupportedLinks.filter(
-      (x) => !store.data.some((y) => y.url === x.url)
-    );
-  }
-});
+// onMounted(() => {
+//   storageSync("toStore");
+// });
+// watch(store, (newData) => {
+//   storageSync("toLocalStorage");
+//   if (hasMatchingURLs(store.data, store.unsupportedLinks)) {
+//     store.unsupportedLinks = store.unsupportedLinks.filter(
+//       (x) => !store.data.some((y) => y.url === x.url)
+//     );
+//   }
+// });
+const title = ref('')
+const n = ref({
+  title: 'wd33w',
+  id: 13423,
+  category: 'e'
+
+})
+
+import { doc, setDoc } from "firebase/firestore"; 
+
+const cityRef = doc(firebaseStore.db, '20240927/BJ/fw/newdoc');
+
 </script>
 <template>
   <FloatNav />
 
   <div class="w-svw h-svh items-center justify-center pt-14">
-    <EditTab />
+   <!-- <EditTab /> -->
 
-    <ImportTab />
+    <ImportTab /> 
 
-    <ExportTab />
+    <!-- <ExportTab />  -->
+
+    <!-- <v-text-field
+        class="px-4"
+        v-model="n.title"
+        label="Title"
+      ></v-text-field>
+      <v-btn @click="firebaseStore.createDoc(n)">
+        Save
+      </v-btn> -->
   </div>
 
   <!-- <v-layout class="rounded rounded-md">

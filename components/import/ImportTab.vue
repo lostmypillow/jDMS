@@ -1,5 +1,5 @@
 <script setup>
-import { store } from "~/store";
+import { store } from '~/stores/store';
 const errorMsg = ref()
 const inputLink = ref()
 

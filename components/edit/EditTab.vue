@@ -35,8 +35,7 @@ function openAddDialog(cat) {
   dialog.value = true;
 }
 
-const menuvmodel = ref(null)
-
+const menuvmodel = ref(null);
 </script>
 <template>
   <v-dialog v-model="editDialog">
@@ -88,9 +87,13 @@ const menuvmodel = ref(null)
           ]"
           v-model="store.data.find((x) => x.id == currentId).category"
           variant="underlined"
-          @update:model-value="store.changeCategory(currentId, store.data.find((x) => x.id == currentId).category)"
+          @update:model-value="
+            store.changeCategory(
+              currentId,
+              store.data.find((x) => x.id == currentId).category
+            )
+          "
         ></v-select>
-        
       </div>
 
       <div class="flex flex-row px-4 gap-2">
@@ -119,21 +122,26 @@ const menuvmodel = ref(null)
 
   <v-dialog v-model="dialog" persistent>
     <v-card class="px-8 py-4 w-full flex flex-col gap-4" rounded="xl">
-<div class="flex flex-row w-full items-center justify-between">
-  
-  <v-btn prepend-icon="mdi-close" @click="dialog = false" rounded="xl" variant="tonal"> Cancel </v-btn>
-<div> Add to {{ store.addCategory }}</div>
-<edit-button-save @click="saveItem" rounded="xl" />
-  
-</div>
-     
+      <div class="flex flex-row w-full items-center justify-between">
+        <v-btn
+          prepend-icon="mdi-close"
+          @click="dialog = false"
+          rounded="xl"
+          variant="tonal"
+        >
+          Cancel
+        </v-btn>
+        <div>Add to {{ store.addCategory }}</div>
+        <edit-button-save @click="saveItem" rounded="xl" />
+      </div>
+
       <v-text-field v-model="store.addTitle" label="title"></v-text-field>
       <div class="flex w-full flex-row gap-4">
-          <v-text-field v-model="store.addDate" label="date"></v-text-field>
-      <v-text-field v-model="store.addSource" label="source"></v-text-field>
-      <v-text-field v-model="store.addAuthor" label="author"></v-text-field>
+        <v-text-field v-model="store.addDate" label="date"></v-text-field>
+        <v-text-field v-model="store.addSource" label="source"></v-text-field>
+        <v-text-field v-model="store.addAuthor" label="author"></v-text-field>
       </div>
-    
+
       <v-text-field v-model="store.addURL" label="url"></v-text-field>
       <v-textarea
         label="Content"
@@ -142,7 +150,6 @@ const menuvmodel = ref(null)
         variant="filled"
         auto-grow
       ></v-textarea>
-  
     </v-card>
   </v-dialog>
 
@@ -171,7 +178,12 @@ const menuvmodel = ref(null)
           <div class="flex flex-row items-center justify-between gap-2 w-full">
             <edit-button-up :category="n.category" :priority="n.priority" />
 
-            <v-btn size="small" @click="openEditDialog(n.id)" rounded="xl" icon="mdi-pencil"></v-btn>
+            <v-btn
+              size="small"
+              @click="openEditDialog(n.id)"
+              rounded="xl"
+              icon="mdi-pencil"
+            ></v-btn>
             <v-btn
               icon="mdi-arrow-down"
               size="small"

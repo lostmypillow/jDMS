@@ -67,8 +67,8 @@ async function addData(data) {
 
 //read data web
 
-import { doc, onSnapshot } from "firebase/firestore";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import {  doc,collection, query, where, onSnapshot } from "firebase/firestore";
 let store
 const q = query(collection(db, '2024', '0924', "Qualcomm相關新聞"));
 const m = query(collection(db, '2024', '0924', "MediaTek相關新聞"));

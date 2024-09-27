@@ -8,20 +8,6 @@ const currentDate = new Date();
 
 
 export const store = reactive({
-  fireDb: null,
-  startFbService() {
-    const app = initializeApp(firebaseConfig);
-    this.fireDb = getFirestore(app);
-    // connectFirestoreEmulator(this.fireDb, "127.0.0.1", 8080)
-  },
-  returnTargetColRef(category) {
-    return collection(
-      this.fireDb,
-      this.currentYear,
-      this.currentDate,
-      category
-    )
-  },
   currentYear: currentDate.getFullYear().toString(),
   currentDate:
     String(currentDate.getMonth() + 1).padStart(2, "0") +
