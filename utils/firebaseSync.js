@@ -7,14 +7,7 @@ import {
   getFirestore,
 } from "firebase/firestore";
 import { connectFirestoreEmulator } from "firebase/firestore";
-const firebaseConfig = {
-  apiKey: "AIzaSyAgzKXjreJUMqEiUNbzUZLhAoiv3KfS8Uk",
-  authDomain: "compassprdms.firebaseapp.com",
-  projectId: "compassprdms",
-  storageBucket: "compassprdms.appspot.com",
-  messagingSenderId: "189553958868",
-  appId: "1:189553958868:web:38e313ca61559c42d74041",
-};
+
 import { store } from "~/store";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

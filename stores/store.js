@@ -1,7 +1,31 @@
 import { reactive } from "vue";
 
 import { v4 as uuid } from "uuid";
+const currentDate = new Date();
+
+
+// Initialize Firebase
+
+
 export const store = reactive({
+  fireDb: null,
+  startFbService() {
+    const app = initializeApp(firebaseConfig);
+    this.fireDb = getFirestore(app);
+    // connectFirestoreEmulator(this.fireDb, "127.0.0.1", 8080)
+  },
+  returnTargetColRef(category) {
+    return collection(
+      this.fireDb,
+      this.currentYear,
+      this.currentDate,
+      category
+    )
+  },
+  currentYear: currentDate.getFullYear().toString(),
+  currentDate:
+    String(currentDate.getMonth() + 1).padStart(2, "0") +
+    String(currentDate.getDate()).padStart(2, "0"),
   data: [],
   docx: "",
   tab: "import",
@@ -40,7 +64,7 @@ export const store = reactive({
           i < this.data.filter((x) => x.category == nav).length;
           i++
         ) {
-          this.data.filter((x) => x.category == nav)[i]["priority"] = i + 1; 
+          this.data.filter((x) => x.category == nav)[i]["priority"] = i + 1;
         }
       }
     }
