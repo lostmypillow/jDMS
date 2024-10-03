@@ -25,15 +25,8 @@ export default function () {
     String(now.getMonth() + 1).padStart(2, "0") +
     "-" +
     String(now.getDate()).padStart(2, "0");
-  // const collectionNameU =
-  //   String(now.getFullYear()) +
-  //   "-" +
-  //   String(now.getMonth() + 1).padStart(2, "0") +
-  //   "-" +
-  //   String(now.getDate()).padStart(2, "0") +
-  //   "u";
+
   const q = query(collection(db, collectionName));
-  // const qu = query(collection(db, collectionNameU));
 
   onSnapshot(q, (snapshot) => {
     let newArray = [];

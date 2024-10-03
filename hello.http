@@ -32,8 +32,6 @@ content-type: application/json
 ### 
 POST http://127.0.0.1:5000/import HTTP/1.1
 content-type: application/json
-
-// When a user sends a text message containing mention and an emoji in a group chat
 {
   "destination": "xxxxxxxxxx",
   "events": [
